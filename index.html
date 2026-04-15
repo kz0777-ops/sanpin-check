@@ -65,9 +65,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Meiryo',sans-
 .err-msg{font-size:11px;color:#A32D2D;margin-top:4px;display:none}
 .field input.err,.field select.err{border-color:#E24B4A;background:#fff8f8}
 footer{text-align:center;font-size:11px;color:#bbb;padding:1.5rem 0 2rem}
+
+@media print {
+  body > .wrap { display: none !important; }
+  #pdf-overlay { display: block !important; position: static !important; }
+}
+@media screen {
+  #pdf-overlay { display: none; }
+}
 </style>
 </head>
 <body>
+<div id="pdf-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:9999;overflow:auto;padding:0">
+  <div id="pdf-content"></div>
+</div>
 <div class="wrap">
 
 <div class="header">
@@ -479,77 +490,63 @@ function downloadPDF() {
     ? '<br><span style="font-size:8.5pt;color:#555">　Bの内訳：' + esc(naiwake) + '</span>'
     : '';
 
-  var html =
-    '<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><title>付加価値割合証明書</title>' +
-    '<style>' +
-    '@page{size:A4;margin:15mm 16mm 12mm}' +
-    'body{font-family:\'Hiragino Mincho ProN\',\'MS Mincho\',\'Yu Mincho\',serif;font-size:10pt;line-height:1.65;color:#000}' +
-    '.atena{margin-bottom:3mm}' +
-    '.right-box{text-align:right;font-size:9.5pt;margin-bottom:3mm;line-height:1.9}' +
-    '.ul{border-bottom:1pt solid #000;display:inline-block;padding:0 1mm;min-width:60mm}' +
-    '.ul-w{border-bottom:1pt solid #000;display:inline-block;padding:0 1mm;min-width:100mm}' +
-    '.ul-m{border-bottom:1pt solid #000;display:inline-block;min-width:35mm;padding:0 1mm;text-align:right}' +
-    '.ul-s{border-bottom:1pt solid #000;display:inline-block;min-width:18mm;padding:0 1mm;text-align:center}' +
-    '.cb{width:4mm;height:4mm;border:1pt solid #000;display:inline-block;text-align:center;line-height:4mm;font-size:9pt;vertical-align:middle;margin-right:1mm}' +
-    '.indent{padding-left:7mm;font-size:9.5pt;margin:2mm 0}' +
-    '.note-box{border:0.5pt solid #000;padding:2mm 4mm;margin:2mm 0;min-height:12mm}' +
-    '.agree{font-size:8.5pt;margin:2mm 0 2mm 5mm;line-height:1.6;list-style:disc}' +
-    '.agree li{margin-bottom:1.5mm}' +
-    '.sign-box{border:0.5pt solid #000;padding:3mm 4mm;margin-top:4mm;font-size:9.5pt;line-height:1.9}' +
-    '.ryakki{border:0.5pt solid #ccc;background:#f9f9f9;padding:3mm 4mm;font-size:8.5pt;margin-top:5mm;line-height:1.7}' +
-    '.footer{font-size:8pt;color:#888;text-align:center;margin-top:5mm}' +
-    '</style></head><body>' +
+  var pdfHtml =
+    '<div style="font-family:serif;font-size:10pt;line-height:1.65;color:#000;padding:15mm 16mm 12mm;max-width:210mm;margin:0 auto">' +
 
-    '<div class="atena">西伊豆町長　殿</div>' +
+    '<div style="margin-bottom:3mm">西伊豆町長　殿</div>' +
 
-    '<div class="right-box">【返礼品等の製造等を行う者】<br>' +
-    '住所　<span class="ul">　</span><br>' +
-    '事業者名　<span class="ul">' + esc(jigyosha) + '</span><br>' +
-    '代表者職・氏名　<span class="ul">' + esc(tantou) + '</span></div>' +
+    '<div style="text-align:right;font-size:9.5pt;margin-bottom:3mm;line-height:1.9">【返礼品等の製造等を行う者】<br>' +
+    '住所　<span style="border-bottom:1pt solid #000;display:inline-block;min-width:60mm;padding:0 1mm">　</span><br>' +
+    '事業者名　<span style="border-bottom:1pt solid #000;display:inline-block;min-width:60mm;padding:0 1mm">' + esc(jigyosha) + '</span><br>' +
+    '代表者職・氏名　<span style="border-bottom:1pt solid #000;display:inline-block;min-width:55mm;padding:0 1mm">' + esc(tantou) + '</span></div>' +
 
-    '<p style="margin:4mm 0">　<span class="ul-w">' + esc(shohin) + '</span>については、西伊豆町の区域内における工程により、当該返礼品等の価値の<span class="ul-s"><strong>' + p1(ratio) + '%</strong></span>が生じていることを証明します。<br>' +
+    '<p style="margin:4mm 0">　<span style="border-bottom:1pt solid #000;display:inline-block;min-width:100mm;padding:0 1mm">' + esc(shohin) + '</span>については、西伊豆町の区域内における工程により、当該返礼品等の価値の<span style="border-bottom:1pt solid #000;display:inline-block;min-width:16mm;padding:0 1mm;text-align:center"><strong>' + p1(ratio) + '%</strong></span>が生じていることを証明します。<br>' +
     '上記については、以下の算出方法（該当する算出方法に☑）により算出しています。</p>' +
 
-    '<div style="margin:4mm 0 2mm">' +
-    '<span class="cb">☑</span><strong>総務大臣が定める標準的な算出方法</strong><br>' +
+    '<div style="margin:3mm 0 2mm">' +
+    '<span style="width:4mm;height:4mm;border:1pt solid #000;display:inline-block;text-align:center;line-height:4mm;font-size:9pt;vertical-align:middle;margin-right:1mm">☑</span><strong>総務大臣が定める標準的な算出方法</strong><br>' +
     '<span style="font-size:9pt;margin-left:5mm">※標準的な算出方法における算出基礎は以下のとおり。</span><br>' +
-    '<div class="indent">A：当該地方団体による返礼品等の調達費用　<span class="ul-m"><strong>' + fmt(A) + '</strong></span>円（税込）<br>' +
-    'B：当該返礼品等の製造・販売等のために当該地方団体の区域外で生じた費用　<span class="ul-m"><strong>' + fmt(B) + '</strong></span>円（税込）' + naiwakeRow + '</div></div>' +
+    '<div style="padding-left:7mm;font-size:9.5pt;margin:2mm 0">A：当該地方団体による返礼品等の調達費用　<span style="border-bottom:1pt solid #000;display:inline-block;min-width:35mm;padding:0 1mm;text-align:right"><strong>' + fmt(A) + '</strong></span>円（税込）<br>' +
+    'B：当該返礼品等の製造・販売等のために当該地方団体の区域外で生じた費用　<span style="border-bottom:1pt solid #000;display:inline-block;min-width:35mm;padding:0 1mm;text-align:right"><strong>' + fmt(B) + '</strong></span>円（税込）' + naiwakeRow + '</div></div>' +
 
-    '<div style="margin:4mm 0">' +
-    '<span class="cb">□</span><strong>その他の算出方法</strong><br>' +
+    '<div style="margin:3mm 0">' +
+    '<span style="width:4mm;height:4mm;border:1pt solid #000;display:inline-block;text-align:center;line-height:4mm;font-size:9pt;vertical-align:middle;margin-right:1mm">□</span><strong>その他の算出方法</strong><br>' +
     '<span style="font-size:9pt;margin-left:5mm">※その他の算出方法とする理由及びその算出方法の詳細は以下のとおり。</span>' +
-    '<div class="note-box"></div></div>' +
+    '<div style="border:0.5pt solid #000;padding:2mm 4mm;margin:2mm 0;min-height:12mm"></div></div>' +
 
-    '<p style="margin:4mm 0;font-size:10pt">また、当該返礼品等の製造・加工地<sup>※1</sup>は<span class="ul">' + esc(seizochi) + '</span>であり、一般販売価格は<span class="ul-m"><strong>' + fmt(hanbai) + '</strong></span>円（税込）です<sup>※2</sup>。' +
+    '<p style="margin:3mm 0;font-size:10pt">また、当該返礼品等の製造・加工地<sup>※1</sup>は<span style="border-bottom:1pt solid #000;display:inline-block;min-width:50mm;padding:0 1mm">' + esc(seizochi) + '</span>であり、一般販売価格は<span style="border-bottom:1pt solid #000;display:inline-block;min-width:30mm;padding:0 1mm;text-align:right"><strong>' + fmt(hanbai) + '</strong></span>円（税込）です<sup>※2</sup>。' +
     '<span style="font-size:8.5pt;color:' + (hanbaiOk ? '#27500A' : '#A32D2D') + ';margin-left:2mm">' + (hanbaiOk ? '（✓ A以上）' : '（✗ 要確認）') + '</span></p>' +
 
-    '<p style="margin:3mm 0;font-size:9.5pt">なお、当該返礼品等を取り扱うに当たって、下記の事項に同意します。</p>' +
-    '<ul class="agree">' +
-    '<li>当該返礼品等については、地場産品基準（平成31年総務省告示第179号第5条）第8号イ〜ハの返礼品等として提出先以外の都道府県又は市区町村が取り扱う場合を除き、本証明書の提出先以外の都道府県又は市区町村の第3号の返礼品等として取り扱わないこと。</li>' +
+    '<p style="margin:2mm 0;font-size:9.5pt">なお、当該返礼品等を取り扱うに当たって、下記の事項に同意します。</p>' +
+    '<ul style="font-size:8.5pt;margin:2mm 0 2mm 5mm;line-height:1.6;list-style:disc">' +
+    '<li style="margin-bottom:1.5mm">当該返礼品等については、地場産品基準（平成31年総務省告示第179号第5条）第8号イ〜ハの返礼品等として提出先以外の都道府県又は市区町村が取り扱う場合を除き、本証明書の提出先以外の都道府県又は市区町村の第3号の返礼品等として取り扱わないこと。</li>' +
     '<li>当該返礼品等の付加価値の算出方法等について、地方団体の求めに応じ、必要な説明や資料提供等を行うこと。</li>' +
     '</ul>' +
 
-    '<div class="sign-box">' +
+    '<div style="border:0.5pt solid #000;padding:3mm 4mm;margin-top:4mm;font-size:9.5pt;line-height:1.9">' +
     '<div>証明日：' + today() + '</div>' +
     '<div>事業者名：' + esc(jigyosha) + '</div>' +
     '<div>担当者名：' + esc(tantou) + '</div>' +
     '</div>' +
 
     '<div style="font-size:8pt;color:#555;margin-top:3mm;line-height:1.6">' +
-    '※1 製造・加工地：国内は都道府県名・市区町村名、国外は国名。' +
-    '　※2 一般販売価格：非売品の場合は類似製品の通常価格。' +
+    '※1 製造・加工地：国内は都道府県名・市区町村名、国外は国名。　※2 一般販売価格：非売品の場合は類似製品の通常価格。' +
     '</div>' +
 
-    '<div class="footer">西伊豆町 産業振興課　地場産品基準第3号チェックシート　' + today() + '</div>' +
-    '</body></html>';
+    '<div style="font-size:8pt;color:#aaa;text-align:center;margin-top:4mm">西伊豆町 産業振興課　地場産品基準第3号チェックシート　' + today() + '</div>' +
+    '</div>';
 
-  var w = window.open('', '_blank', 'width=820,height=1000');
-  w.document.write(html);
-  w.document.close();
-  w.focus();
-  setTimeout(function() { w.print(); }, 700);
+  document.getElementById('pdf-content').innerHTML = pdfHtml;
+  document.getElementById('pdf-overlay').style.display = 'block';
+  window.scrollTo(0, 0);
+  setTimeout(function() {
+    window.print();
+    setTimeout(function() {
+      document.getElementById('pdf-overlay').style.display = 'none';
+    }, 1000);
+  }, 300);
 }
+
 
 function resetForm() {
   var ids = ['jigyosha', 'tantou', 'mail-cc', 'seizochi', 'valA', 'valB', 'hanbai', 'naiwake'];
