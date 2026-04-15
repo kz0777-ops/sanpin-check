@@ -237,6 +237,7 @@ var mailCc = '';
 
 function fmt(n) { return Math.round(n).toLocaleString(); }
 function p1(n)  { return n.toFixed(1); }
+function esc2(s) { return (s || ''); }
 function esc(s) {
   return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
@@ -423,29 +424,31 @@ function judge() {
     var naiwakeRow = naiwake ? '\n区域外費用の内訳：' + naiwake : '';
     var docText =
       '西伊豆町長　殿\n\n' +
-      '　地場産品基準（平成31年総務省告示第179号第5条第3号）に基づき、' +
-      '下記のとおり付加価値割合を証明いたします。\n\n' +
-      '記\n\n' +
-      '事業者名　：' + jigyosha + '\n' +
-      '担当者名　：' + tantou + '\n' +
-      '返礼品名　：' + shohin + '\n' +
-      '証明日　　：' + today() + '\n\n' +
-      '【算出内容（標準的な算出方法）】\n' +
-      'A（調達費用・精算額・税込）　：' + fmt(A) + '円\n' +
-      'B（区域外で生じた費用・税込）：' + fmt(B) + '円' + naiwakeRow + '\n\n' +
-      '区域内付加価値額　　：A − B ＝ ' + fmt(inVal) + '円\n' +
-      '区域内付加価値割合　：（A−B）÷ A ＝ ' + p1(ratio) + '%\n\n' +
+      '【返礼品等の製造等を行う者】\n' +
+      '事業者名：' + jigyosha + '\n' +
+      '代表者（担当者）：' + tantou + '\n\n' +
+      esc2(shohin) + 'については、西伊豆町の区域内における工程により、' +
+      '当該返礼品等の価値の ' + p1(ratio) + '% が生じていることを証明します。\n' +
+      '上記については、総務大臣が定める標準的な算出方法により算出しています。\n\n' +
+      '【算出内容】\n' +
+      'A：当該地方団体による返礼品等の調達費用\n' +
+      '　　' + fmt(A) + '円（税込）\n' +
+      'B：区域外で生じた費用\n' +
+      '　　' + fmt(B) + '円（税込）' + (naiwake ? '\n　　内訳：' + naiwake : '') + '\n\n' +
+      '区域内付加価値額　：A − B ＝ ' + fmt(inVal) + '円\n' +
+      '区域内付加価値割合：（A−B）÷ A ＝ ' + p1(ratio) + '%\n\n' +
       '製造・加工地　：' + seizochi + '\n' +
       '一般販売価格　：' + fmt(hanbai) + '円（税込）\n\n' +
-      '上記割合が付加価値の過半を上回ることを確認しました。\n' +
-      '算出は総務省告示に定める標準的な算出方法によります。\n\n' +
-      '以上\n\n' +
+      '【同意事項】\n' +
+      '・本証明書の提出先以外の都道府県又は市区町村の第3号の返礼品等として取り扱わないこと。\n' +
+      '・付加価値の算出方法等について、地方団体の求めに応じ、必要な説明や資料提供等を行うこと。\n\n' +
+      '証明日：' + today() + '\n' +
       '━━━━━━━━━━━━━━━━━━━━\n' +
       jigyosha + '\n' +
       '担当：' + tantou + '\n' +
       '━━━━━━━━━━━━━━━━━━━━';
 
-    mailSubject = '【地場産品基準第3号 付加価値割合証明】' + jigyosha + '　' + shohin;
+        mailSubject = '【地場産品基準第3号 付加価値割合証明】' + jigyosha + '　' + shohin;
     mailBody    = docText + '\n\n※この画面のスクリーンショットおよびPDFを本メールに添付してください。';
     mailCc      = cc;
 
