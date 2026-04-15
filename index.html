@@ -17,24 +17,29 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Meiryo',sans-
 .field:last-child{margin-bottom:0}
 .field label{display:block;font-size:14px;font-weight:600;color:#1a1a1a;margin-bottom:4px}
 .field .desc{font-size:11px;color:#888;margin-bottom:6px;line-height:1.5}
-.field input,.field select,.field textarea{width:100%;font-size:15px;padding:8px 10px;border:1px solid #ddd;border-radius:8px;background:#fafafa;color:#1a1a1a;outline:none;transition:border-color .15s}
+.field input,.field select,.field textarea{width:100%;font-size:15px;padding:8px 10px;border:1px solid #ddd;border-radius:8px;background:#fafafa;color:#1a1a1a;outline:none}
 .field input:focus,.field select:focus,.field textarea:focus{border-color:#185FA5;background:#fff}
-.field textarea{height:72px;resize:none}
+.field textarea{height:52px;resize:none}
 .field input[type=number]{-moz-appearance:textfield}
 .field input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 .mode-toggle{display:flex;gap:6px;margin-bottom:8px}
-.mtab{flex:1;padding:6px 0;font-size:12px;font-weight:600;text-align:center;border:1px solid #ddd;border-radius:8px;background:#fff;color:#888;cursor:pointer;transition:.15s}
+.mtab{flex:1;padding:6px 0;font-size:12px;font-weight:600;text-align:center;border:1px solid #ddd;border-radius:8px;background:#fff;color:#888;cursor:pointer}
 .mtab.on{background:#E6F1FB;color:#185FA5;border-color:#185FA5}
+.b-box{background:#f9f9f9;border:1px solid #e0e0e0;border-radius:8px;padding:10px 12px;margin-top:4px}
+.b-row{margin-bottom:10px}
+.b-row:last-child{margin-bottom:0}
+.b-label{font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:2px}
+.b-desc{font-size:11px;color:#888;margin-bottom:4px}
+.b-total{margin-top:8px;background:#EAF3DE;border-radius:8px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center}
+.b-total-label{font-size:13px;color:#3B6D11;font-weight:600}
+.b-total-value{font-size:18px;font-weight:700;color:#27500A}
 .calc-row{display:flex;gap:10px;margin-top:.5rem}
 .calc-box{flex:1;background:#f5f5f5;border-radius:8px;padding:.75rem;text-align:center}
 .calc-label{font-size:11px;color:#888;margin-bottom:4px}
 .calc-value{font-size:20px;font-weight:700;color:#1a1a1a}
 .calc-sub{font-size:10px;color:#aaa;margin-top:2px}
-.hanbai-check{font-size:12px;margin-top:4px;display:none}
-.hanbai-ok{color:#27500A;display:block}
-.hanbai-ng{color:#A32D2D;display:block}
+.hanbai-check{font-size:12px;margin-top:4px}
 .submit-btn{width:100%;padding:.85rem;background:#185FA5;color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;margin-bottom:.75rem}
-.submit-btn:active{opacity:.8}
 .result-card{border-radius:12px;padding:1.1rem 1.25rem;border:2px solid;margin-bottom:.75rem;display:none}
 .result-card.visible{display:block}
 .ok-card{background:#EAF3DE;border-color:#639922}
@@ -53,9 +58,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Meiryo',sans-
 .doc-title{font-size:11px;font-weight:600;color:#888;letter-spacing:.06em;margin-bottom:.75rem}
 .doc-body{font-size:13px;color:#1a1a1a;line-height:2;white-space:pre-wrap;background:#f9f9f9;border-radius:8px;padding:.9rem 1rem;margin-bottom:.75rem;border:1px solid #eee}
 .mail-btn{width:100%;padding:.85rem;background:#27500A;color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;margin-bottom:.5rem}
-.mail-btn:active{opacity:.8}
-.pdf-btn{width:100%;padding:.85rem;background:#fff;color:#27500A;border:2px solid #27500A;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:.5rem}
-.pdf-btn:active{opacity:.8}
+.preview-btn{width:100%;padding:.85rem;background:#fff;color:#27500A;border:2px solid #27500A;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:.5rem}
 .mail-note{font-size:11px;color:#888;line-height:1.7;text-align:center;margin-bottom:.75rem;white-space:pre-line}
 .reset-btn{width:100%;padding:.7rem;background:#fff;color:#888;border:1px solid #ddd;border-radius:10px;font-size:14px;cursor:pointer}
 .ng-note{background:#f5f5f5;border-radius:8px;padding:.75rem 1rem;font-size:13px;color:#666;line-height:1.6;margin-bottom:.75rem;display:none}
@@ -66,28 +69,31 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Meiryo',sans-
 .field input.err,.field select.err{border-color:#E24B4A;background:#fff8f8}
 footer{text-align:center;font-size:11px;color:#bbb;padding:1.5rem 0 2rem}
 
-@media print {
-  body > .wrap { display: none !important; }
-  #pdf-overlay { display: block !important; position: static !important; }
-}
-@media screen {
-  #pdf-overlay { display: none; }
-}
+#preview-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#f0f0f0;z-index:9999;overflow-y:auto}
+.preview-header{background:#185FA5;color:#fff;padding:12px 16px;text-align:center;position:sticky;top:0;z-index:10}
+.preview-header h2{font-size:13px;font-weight:600;margin-bottom:2px}
+.preview-header p{font-size:12px;opacity:.9}
+.preview-body{padding:12px}
+.cert-wrap{background:#fff;margin:0 auto;max-width:600px;padding:24px 28px;font-family:serif;font-size:13px;line-height:1.7;color:#000}
+.close-btn-wrap{padding:12px 12px 24px;text-align:center}
+.close-btn{background:#fff;color:#185FA5;border:2px solid #185FA5;border-radius:10px;padding:10px 32px;font-size:15px;font-weight:600;cursor:pointer;width:100%;max-width:320px}
 </style>
 </head>
 <body>
-<div id="pdf-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#f0f0f0;z-index:9999;overflow:auto">
-  <div style="background:#185FA5;color:#fff;padding:12px 16px;text-align:center">
-    <div style="font-size:13px;font-weight:600">証明書プレビュー</div>
-    <div style="font-size:12px;opacity:.9;margin-top:2px">この画面をスクリーンショットして送付してください</div>
+
+<div id="preview-overlay">
+  <div class="preview-header">
+    <h2>証明書プレビュー</h2>
+    <p>この画面をスクリーンショットして送付してください</p>
   </div>
-  <div style="padding:12px">
-  <div id="pdf-content"></div>
+  <div class="preview-body">
+    <div id="cert-content" class="cert-wrap"></div>
   </div>
-  <div style="padding:12px 12px 24px;text-align:center">
-    <button onclick="closePDFOverlay()" style="background:#fff;color:#185FA5;border:2px solid #185FA5;border-radius:10px;padding:10px 32px;font-size:15px;font-weight:600;cursor:pointer;width:100%;max-width:320px">✕ 閉じる（スクリーンショット後に押す）</button>
+  <div class="close-btn-wrap">
+    <button class="close-btn" onclick="closePreview()">✕ 閉じる（スクリーンショット後に押す）</button>
   </div>
 </div>
+
 <div class="wrap">
 
 <div class="header">
@@ -157,43 +163,45 @@ footer{text-align:center;font-size:11px;color:#bbb;padding:1.5rem 0 2rem}
 
   <div class="field">
     <label>B：区域外で生じた費用（税込）</label>
-    <div class="desc">各項目を入力してください。該当しない場合は空欄のままで構いません。</div>
-
-    <div style="background:#f9f9f9;border:1px solid #e0e0e0;border-radius:8px;padding:10px 12px;margin-top:4px">
-      <div style="margin-bottom:10px">
-        <div style="font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:2px">原材料仕入れ</div>
-        <div style="font-size:11px;color:#888;margin-bottom:5px">区域外から仕入れた原材料の費用（円）</div>
-        <input type="number" id="valB1" placeholder="0" min="0" value="0" oninput="liveCalc()" style="width:100%;font-size:15px;padding:7px 10px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a;outline:none">
+    <div class="desc">各項目を入力してください。該当しない場合は 0 のままで構いません。</div>
+    <div class="b-box">
+      <div class="b-row">
+        <div class="b-label">原材料仕入れ</div>
+        <div class="b-desc">区域外から仕入れた原材料の費用（円）</div>
+        <input type="number" id="valB1" value="0" min="0" oninput="liveCalc()" style="width:100%;font-size:15px;padding:7px 10px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a;outline:none">
         <textarea id="naiwake1" placeholder="例：焼津港水揚げのかつお（静岡市業者）" style="width:100%;font-size:13px;padding:7px 10px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a;outline:none;resize:none;height:52px;margin-top:5px"></textarea>
       </div>
-
-      <div style="margin-bottom:10px">
-        <div style="font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:2px">区域外加工</div>
-        <div style="font-size:11px;color:#888;margin-bottom:5px">西伊豆町外で行った加工・製造の費用（円）</div>
-        <input type="number" id="valB2" placeholder="0" value="0" min="0" oninput="liveCalc()" style="width:100%;font-size:15px;padding:7px 10px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a;outline:none">
+      <div class="b-row">
+        <div class="b-label">区域外加工</div>
+        <div class="b-desc">西伊豆町外で行った加工・製造の費用（円）</div>
+        <input type="number" id="valB2" value="0" min="0" oninput="liveCalc()" style="width:100%;font-size:15px;padding:7px 10px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a;outline:none">
         <textarea id="naiwake2" placeholder="例：静岡市内業者による包装加工" style="width:100%;font-size:13px;padding:7px 10px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a;outline:none;resize:none;height:52px;margin-top:5px"></textarea>
       </div>
-
-      <div>
-        <div style="font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:2px">その他</div>
-        <div style="font-size:11px;color:#888;margin-bottom:5px">上記以外の区域外費用（円）</div>
-        <input type="number" id="valB3" placeholder="0" value="0" min="0" oninput="liveCalc()" style="width:100%;font-size:15px;padding:7px 10px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a;outline:none">
+      <div class="b-row">
+        <div class="b-label">その他</div>
+        <div class="b-desc">上記以外の区域外費用（円）</div>
+        <input type="number" id="valB3" value="0" min="0" oninput="liveCalc()" style="width:100%;font-size:15px;padding:7px 10px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a;outline:none">
         <textarea id="naiwake3" placeholder="例：区域外業者への輸送費" style="width:100%;font-size:13px;padding:7px 10px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a;outline:none;resize:none;height:52px;margin-top:5px"></textarea>
       </div>
     </div>
-
-    <div style="margin-top:8px;background:#EAF3DE;border-radius:8px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center">
-      <span style="font-size:13px;color:#3B6D11;font-weight:600">B 合計（自動計算）</span>
-      <span style="font-size:18px;font-weight:700;color:#27500A" id="valB-total">0円</span>
+    <div class="b-total">
+      <span class="b-total-label">B 合計（自動計算）</span>
+      <span class="b-total-value" id="b-total-disp">0円</span>
     </div>
-    <input type="hidden" id="valB" value="0">
-    <div class="err-msg" id="err-valB"></div>
+  </div>
+
+  <div class="field">
+    <label>一般販売価格（税込）<span class="required">*</span></label>
+    <div class="desc">一般消費者向けの通常販売価格（円）。調達費用A（精算額）を下回ってはいけません。</div>
+    <input type="number" id="hanbai" placeholder="例：2500" min="0" oninput="liveCalc()">
+    <div class="err-msg" id="err-hanbai">一般販売価格を入力してください</div>
+    <div class="hanbai-check" id="hanbai-check"></div>
   </div>
 
   <div class="field">
     <label>製造・加工地<span class="required">*</span></label>
-    <div class="desc">商品の製造・加工が行われた場所（例：静岡県西伊豆町）</div>
-    <input type="text" id="seizochi" placeholder="例：静岡県西伊豆町" value="静岡県西伊豆町">
+    <div class="desc">違う場合のみ書き直してください</div>
+    <input type="text" id="seizochi" value="静岡県西伊豆町">
     <div class="err-msg" id="err-seizochi">製造・加工地を入力してください</div>
   </div>
 
@@ -223,12 +231,11 @@ footer{text-align:center;font-size:11px;color:#bbb;padding:1.5rem 0 2rem}
   <div class="doc-title">証明文書（メール本文）— 内容を確認してから送信してください</div>
   <div class="doc-body" id="doc-body"></div>
   <button class="mail-btn" onclick="sendMail()">メールを送信する</button>
-  <button class="pdf-btn" onclick="downloadPDF()">証明書プレビューを表示</button>
+  <button class="preview-btn" onclick="showPreview()">証明書プレビューを表示</button>
   <div class="mail-note" id="mail-note"></div>
 </div>
 
 <div class="ng-note" id="ng-note"></div>
-
 <button class="reset-btn" onclick="resetForm()">別の商品を入力する</button>
 
 <footer>西伊豆町 産業振興課｜地場産品基準 第3号 チェックシート</footer>
@@ -257,16 +264,39 @@ var currentMode = 'list';
 var mailSubject = '';
 var mailBody = '';
 var mailCc = '';
+var lastB = 0;
+var lastA = 0;
+var lastH = 0;
+var lastRatio = 0;
+var lastInVal = 0;
 
 function fmt(n) { return Math.round(n).toLocaleString(); }
 function p1(n)  { return n.toFixed(1); }
-function esc2(s) { return (s || ''); }
-function esc(s) {
-  return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
+function esc(s) { return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function today() {
   var d = new Date();
-  return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日';
+  return d.getFullYear() + '年' + (d.getMonth()+1) + '月' + d.getDate() + '日';
+}
+
+function getB() {
+  var b1 = parseFloat(document.getElementById('valB1').value) || 0;
+  var b2 = parseFloat(document.getElementById('valB2').value) || 0;
+  var b3 = parseFloat(document.getElementById('valB3').value) || 0;
+  return b1 + b2 + b3;
+}
+
+function getNaiwake() {
+  var b1 = parseFloat(document.getElementById('valB1').value) || 0;
+  var b2 = parseFloat(document.getElementById('valB2').value) || 0;
+  var b3 = parseFloat(document.getElementById('valB3').value) || 0;
+  var n1 = document.getElementById('naiwake1').value.trim();
+  var n2 = document.getElementById('naiwake2').value.trim();
+  var n3 = document.getElementById('naiwake3').value.trim();
+  var parts = [];
+  if (b1 > 0) parts.push('原材料仕入れ ' + fmt(b1) + '円' + (n1 ? '（' + n1 + '）' : ''));
+  if (b2 > 0) parts.push('区域外加工 ' + fmt(b2) + '円' + (n2 ? '（' + n2 + '）' : ''));
+  if (b3 > 0) parts.push('その他 ' + fmt(b3) + '円' + (n3 ? '（' + n3 + '）' : ''));
+  return parts.join(' / ');
 }
 
 function setMode(mode) {
@@ -285,39 +315,24 @@ function onJigyoshaChange() {
   var tog = document.getElementById('mode-toggle');
   document.getElementById('jigyosha').classList.remove('err');
   document.getElementById('err-jigyosha').style.display = 'none';
-
   if (!j) {
-    sel.style.display = 'none';
-    txt.style.display = 'block';
-    txt.value = '';
-    txt.placeholder = '事業者を選ぶと商品リストが表示されます';
-    txt.disabled = true;
-    tog.style.display = 'none';
-    return;
+    sel.style.display = 'none'; txt.style.display = 'block';
+    txt.value = ''; txt.placeholder = '事業者を選ぶと商品リストが表示されます';
+    txt.disabled = true; tog.style.display = 'none'; return;
   }
-
   var list = PRODUCTS[j];
-  var hasList = list && list.length > 0;
-
-  if (hasList) {
+  if (list && list.length > 0) {
     var opts = '<option value="">商品を選んでください</option>';
-    for (var i = 0; i < list.length; i++) {
-      opts += '<option value="' + esc(list[i]) + '">' + esc(list[i]) + '</option>';
-    }
+    for (var i = 0; i < list.length; i++) opts += '<option value="' + esc(list[i]) + '">' + esc(list[i]) + '</option>';
     sel.innerHTML = opts;
-    tog.style.display = 'flex';
-    sel.style.display = 'block';
-    txt.style.display = 'none';
+    tog.style.display = 'flex'; sel.style.display = 'block'; txt.style.display = 'none';
     currentMode = 'list';
     document.getElementById('tab-list').classList.add('on');
     document.getElementById('tab-free').classList.remove('on');
   } else {
-    tog.style.display = 'none';
-    sel.style.display = 'none';
-    txt.style.display = 'block';
-    txt.disabled = false;
-    txt.placeholder = '商品名を入力してください';
-    txt.value = '';
+    tog.style.display = 'none'; sel.style.display = 'none';
+    txt.style.display = 'block'; txt.disabled = false;
+    txt.placeholder = '商品名を入力してください'; txt.value = '';
     currentMode = 'free';
   }
   clearShohinErr();
@@ -335,14 +350,14 @@ function getShohinName() {
 }
 
 function liveCalc() {
-  var A  = parseFloat(document.getElementById('valA').value);
-  var B  = B1 + B2 + B3;
-  document.getElementById('valB').value = B;
-  var totalEl = document.getElementById('valB-total');
-  if (totalEl) totalEl.textContent = fmt(B) + '円';
-  var H = parseFloat(document.getElementById('hanbai').value);
+  var A = parseFloat(document.getElementById('valA').value) || 0;
+  var B = getB();
+  var H = parseFloat(document.getElementById('hanbai').value) || 0;
+
+  document.getElementById('b-total-disp').textContent = fmt(B) + '円';
+
   var row = document.getElementById('live-row');
-  if (!isNaN(A) && !isNaN(B) && A > 0) {
+  if (A > 0) {
     document.getElementById('live-val').textContent = fmt(A - B) + '円';
     document.getElementById('live-pct').textContent = p1((A - B) / A * 100) + '%';
     row.style.opacity = '1';
@@ -351,42 +366,37 @@ function liveCalc() {
     document.getElementById('live-pct').textContent = '—';
     row.style.opacity = '.3';
   }
-  document.getElementById('valB').value = '0';
-  var tot = document.getElementById('valB-total');
-  if (tot) tot.textContent = '0円';
+
   var hc = document.getElementById('hanbai-check');
-  if (!isNaN(A) && !isNaN(H) && H > 0 && A > 0) {
+  if (H > 0 && A > 0) {
     if (H >= A) {
-      hc.className = 'hanbai-check hanbai-ok';
+      hc.style.color = '#27500A';
       hc.textContent = '✓ 問題ありません（一般販売価格 ' + fmt(H) + '円 ≥ 調達費用A ' + fmt(A) + '円）';
     } else {
-      hc.className = 'hanbai-check hanbai-ng';
+      hc.style.color = '#A32D2D';
       hc.textContent = '✗ 要確認：一般販売価格（' + fmt(H) + '円）が調達費用A（' + fmt(A) + '円）を下回っています';
     }
   } else {
-    hc.className = 'hanbai-check';
     hc.textContent = '';
   }
 }
 
 function validate() {
   var ok = true;
-  var debug = [];
   var checks = [
-    { id: 'jigyosha', err: 'err-jigyosha', fn: function(v) { return v !== ''; } },
-    { id: 'tantou',   err: 'err-tantou',   fn: function(v) { return v.trim() !== ''; } },
-    { id: 'valA',     err: 'err-valA',     fn: function(v) { return v !== '' && parseFloat(v) > 0; } },
-
-    { id: 'hanbai',   err: 'err-hanbai',   fn: function(v) { return v !== '' && parseFloat(v) > 0; } },
-    { id: 'seizochi', err: 'err-seizochi', fn: function(v) { return v.trim() !== ''; } }
+    { id:'jigyosha', err:'err-jigyosha', fn:function(v){ return v !== ''; } },
+    { id:'tantou',   err:'err-tantou',   fn:function(v){ return v.trim() !== ''; } },
+    { id:'valA',     err:'err-valA',     fn:function(v){ return v !== '' && parseFloat(v) > 0; } },
+    { id:'hanbai',   err:'err-hanbai',   fn:function(v){ return v !== '' && parseFloat(v) > 0; } },
+    { id:'seizochi', err:'err-seizochi', fn:function(v){ return v.trim() !== ''; } }
   ];
   for (var i = 0; i < checks.length; i++) {
-    var c  = checks[i];
+    var c = checks[i];
     var el = document.getElementById(c.id);
     var pass = c.fn(el.value);
     el.classList.toggle('err', !pass);
     document.getElementById(c.err).style.display = pass ? 'none' : 'block';
-    if (!pass) { ok = false; debug.push(c.id + ':NG(val=' + el.value + ')'); }
+    if (!pass) ok = false;
   }
   var sn = getShohinName();
   if (!sn) {
@@ -394,56 +404,42 @@ function validate() {
     else document.getElementById('shohin-text').classList.add('err');
     document.getElementById('err-shohin').style.display = 'block';
     ok = false;
-  } else {
-    clearShohinErr();
-  }
-  var Av = parseFloat(document.getElementById('valA').value);
-  var Hv = parseFloat(document.getElementById('hanbai').value);
-  if (!isNaN(Av) && !isNaN(Hv) && Hv < Av) {
+  } else { clearShohinErr(); }
+  var Av = parseFloat(document.getElementById('valA').value) || 0;
+  var Hv = parseFloat(document.getElementById('hanbai').value) || 0;
+  if (Av > 0 && Hv > 0 && Hv < Av) {
     document.getElementById('hanbai').classList.add('err');
     ok = false;
   }
-  if (!ok) console.log('validate NG:', debug.join(', '));
   return ok;
 }
 
 function judge() {
   if (!validate()) return;
   var A        = parseFloat(document.getElementById('valA').value);
-  var B1v = parseFloat(document.getElementById('valB1').value) || 0;
-  var B2v = parseFloat(document.getElementById('valB2').value) || 0;
-  var B3v = parseFloat(document.getElementById('valB3').value) || 0;
-  var B   = B1v + B2v + B3v;
+  var B        = getB();
   var hanbai   = parseFloat(document.getElementById('hanbai').value);
   var jigyosha = document.getElementById('jigyosha').value;
   var shohin   = getShohinName();
   var tantou   = document.getElementById('tantou').value.trim();
   var cc       = document.getElementById('mail-cc').value.trim();
-  var n1 = document.getElementById('naiwake1').value.trim();
-  var n2 = document.getElementById('naiwake2').value.trim();
-  var n3 = document.getElementById('naiwake3').value.trim();
-  var naiwakeParts = [];
-  if (B1v > 0) naiwakeParts.push('原材料仕入れ ' + fmt(B1v) + '円' + (n1 ? '（' + n1 + '）' : ''));
-  if (B2v > 0) naiwakeParts.push('区域外加工 ' + fmt(B2v) + '円' + (n2 ? '（' + n2 + '）' : ''));
-  if (B3v > 0) naiwakeParts.push('その他 ' + fmt(B3v) + '円' + (n3 ? '（' + n3 + '）' : ''));
-  var naiwake = naiwakeParts.join(' / ');
   var seizochi = document.getElementById('seizochi').value.trim();
+  var naiwake  = getNaiwake();
   var inVal    = A - B;
-  var ratio    = A > 0 ? inVal / A * 100 : 0;
+  var ratio    = inVal / A * 100;
+
+  lastA = A; lastB = B; lastH = hanbai; lastRatio = ratio; lastInVal = inVal;
 
   var cls, title, body;
   if (ratio > 50) {
-    cls   = 'ok-card';
-    title = '第3号 要件を満たしています';
-    body  = '区域内の付加価値が調達費用の過半を上回っています。下の証明文書の内容を確認し、メールで送信してください。';
+    cls = 'ok-card'; title = '第3号 要件を満たしています';
+    body = '区域内の付加価値が調達費用の過半を上回っています。下の証明文書の内容を確認し、メールで送信してください。';
   } else if (ratio === 50) {
-    cls   = 'warn-card';
-    title = 'ちょうど50% — 要件を満たしません';
-    body  = '「過半を上回る」ことが要件です。50%ちょうどは不適合となります。費用の内訳を見直してから担当者にご相談ください。';
+    cls = 'warn-card'; title = 'ちょうど50% — 要件を満たしません';
+    body = '「過半を上回る」ことが要件です。50%ちょうどは不適合となります。費用の内訳を見直してから担当者にご相談ください。';
   } else {
-    cls   = 'ng-card';
-    title = '第3号 要件を満たしません';
-    body  = '区域内付加価値割合が' + p1(ratio) + '%（50%以下）です。費用の内訳を確認のうえ、担当者にご相談ください。';
+    cls = 'ng-card'; title = '第3号 要件を満たしません';
+    body = '区域内付加価値割合が' + p1(ratio) + '%（50%以下）です。費用の内訳を確認のうえ、担当者にご相談ください。';
   }
 
   var rc = document.getElementById('result-card');
@@ -462,20 +458,20 @@ function judge() {
   var nn = document.getElementById('ng-note');
 
   if (ratio > 50) {
-    var naiwakeRow = naiwake ? '\n区域外費用の内訳：' + naiwake : '';
+    var naiwakeRow = naiwake ? '\n　　内訳：' + naiwake : '';
     var docText =
       '西伊豆町長　殿\n\n' +
       '【返礼品等の製造等を行う者】\n' +
       '事業者名：' + jigyosha + '\n' +
       '代表者（担当者）：' + tantou + '\n\n' +
-      esc2(shohin) + 'については、西伊豆町の区域内における工程により、' +
+      shohin + 'については、西伊豆町の区域内における工程により、' +
       '当該返礼品等の価値の ' + p1(ratio) + '% が生じていることを証明します。\n' +
       '上記については、総務大臣が定める標準的な算出方法により算出しています。\n\n' +
       '【算出内容】\n' +
       'A：当該地方団体による返礼品等の調達費用\n' +
       '　　' + fmt(A) + '円（税込）\n' +
       'B：区域外で生じた費用\n' +
-      '　　' + fmt(B) + '円（税込）' + (naiwake ? '\n　　内訳：' + naiwake : '') + '\n\n' +
+      '　　' + fmt(B) + '円（税込）' + naiwakeRow + '\n\n' +
       '区域内付加価値額　：A − B ＝ ' + fmt(inVal) + '円\n' +
       '区域内付加価値割合：（A−B）÷ A ＝ ' + p1(ratio) + '%\n\n' +
       '製造・加工地　：' + seizochi + '\n' +
@@ -489,15 +485,14 @@ function judge() {
       '担当：' + tantou + '\n' +
       '━━━━━━━━━━━━━━━━━━━━';
 
-        mailSubject = '【地場産品基準第3号 付加価値割合証明】' + jigyosha + '　' + shohin;
-    mailBody    = docText + '\n\n※この画面のスクリーンショットおよびPDFを本メールに添付してください。';
+    mailSubject = '【地場産品基準第3号 付加価値割合証明】' + jigyosha + '　' + shohin;
+    mailBody    = docText + '\n\n※この画面のスクリーンショットを本メールに添付してください。';
     mailCc      = cc;
 
     document.getElementById('doc-body').textContent = docText;
-
-    var noteLines = ['クリックするとメールアプリが開きます。', '宛先・件名・本文が自動で入力されます。'];
+    var noteLines = ['クリックするとメールアプリが開きます。宛先・件名・本文が自動で入力されます。'];
     if (cc) noteLines.push('CC：' + cc + '（控えとして送信されます）');
-    noteLines.push('証明書PDFをダウンロードして添付してください。');
+    noteLines.push('証明書プレビューをスクリーンショットして添付してください。');
     document.getElementById('mail-note').textContent = noteLines.join('\n');
 
     dc.className = 'doc-card visible';
@@ -507,62 +502,46 @@ function judge() {
     nn.className = 'ng-note visible';
     nn.textContent = '要件を満たしていないため証明文書は発行できません。費用の内訳を見直してから、担当者にご相談ください。';
   }
-  rc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  rc.scrollIntoView({ behavior:'smooth', block:'start' });
 }
 
 function sendMail() {
-  var url = 'mailto:' + MAIL_TO +
-    '?subject=' + encodeURIComponent(mailSubject) +
-    '&body='    + encodeURIComponent(mailBody);
+  var url = 'mailto:' + MAIL_TO + '?subject=' + encodeURIComponent(mailSubject) + '&body=' + encodeURIComponent(mailBody);
   if (mailCc) url += '&cc=' + encodeURIComponent(mailCc);
   window.location.href = url;
 }
 
-function downloadPDF() {
+function showPreview() {
   var jigyosha = document.getElementById('jigyosha').value;
   var shohin   = getShohinName();
   var tantou   = document.getElementById('tantou').value.trim();
   var seizochi = document.getElementById('seizochi').value.trim();
   var A        = parseFloat(document.getElementById('valA').value);
-  var B1v = parseFloat(document.getElementById('valB1').value) || 0;
-  var B2v = parseFloat(document.getElementById('valB2').value) || 0;
-  var B3v = parseFloat(document.getElementById('valB3').value) || 0;
-  var B   = B1v + B2v + B3v;
+  var B        = getB();
   var hanbai   = parseFloat(document.getElementById('hanbai').value);
-  var n1 = document.getElementById('naiwake1').value.trim();
-  var n2 = document.getElementById('naiwake2').value.trim();
-  var n3 = document.getElementById('naiwake3').value.trim();
-  var naiwakeParts = [];
-  if (B1v > 0) naiwakeParts.push('原材料仕入れ ' + fmt(B1v) + '円' + (n1 ? '（' + n1 + '）' : ''));
-  if (B2v > 0) naiwakeParts.push('区域外加工 ' + fmt(B2v) + '円' + (n2 ? '（' + n2 + '）' : ''));
-  if (B3v > 0) naiwakeParts.push('その他 ' + fmt(B3v) + '円' + (n3 ? '（' + n3 + '）' : ''));
-  var naiwake = naiwakeParts.join(' / ');
+  var naiwake  = getNaiwake();
   var inVal    = A - B;
-  var ratio    = A > 0 ? inVal / A * 100 : 0;
+  var ratio    = inVal / A * 100;
   var hanbaiOk = hanbai >= A;
-  var naiwakeRow = naiwake
-    ? '<br><span style="font-size:9pt;color:#444">　Bの内訳：' + esc(naiwake) + '</span>'
-    : '';
+  var naiwakeRow = naiwake ? '<br><span style="font-size:9pt;color:#444">　' + esc(naiwake) + '</span>' : '';
+  var ul = 'style="border-bottom:1px solid #000;display:inline-block;padding:0 2px"';
 
-  var certHtml =
-    '<div style="background:#fff;margin:0 auto;max-width:600px;padding:24px 28px;font-family:serif;font-size:13px;line-height:1.7;color:#000">' +
-
+  var html =
     '<div style="margin-bottom:8px">西伊豆町長　殿</div>' +
+    '<div style="text-align:right;font-size:12px;margin-bottom:10px;line-height:1.9">' +
+    '【返礼品等の製造等を行う者】<br>' +
+    '住所　<span ' + ul + ' style="min-width:160px;border-bottom:1px solid #000;display:inline-block;padding:0 2px">　</span><br>' +
+    '事業者名　<span ' + ul + ' style="min-width:140px;border-bottom:1px solid #000;display:inline-block;padding:0 2px">' + esc(jigyosha) + '</span><br>' +
+    '代表者職・氏名　<span ' + ul + ' style="min-width:120px;border-bottom:1px solid #000;display:inline-block;padding:0 2px">' + esc(tantou) + '</span></div>' +
 
-    '<div style="text-align:right;font-size:12px;margin-bottom:10px;line-height:1.9">【返礼品等の製造等を行う者】<br>' +
-    '住所　<span style="border-bottom:1px solid #000;display:inline-block;min-width:160px">　</span><br>' +
-    '事業者名　<span style="border-bottom:1px solid #000;display:inline-block;min-width:150px;padding:0 2px">' + esc(jigyosha) + '</span><br>' +
-    '代表者職・氏名　<span style="border-bottom:1px solid #000;display:inline-block;min-width:130px;padding:0 2px">' + esc(tantou) + '</span></div>' +
-
-    '<p style="margin:8px 0">　<span style="border-bottom:1px solid #000;display:inline-block;min-width:220px;padding:0 2px">' + esc(shohin) + '</span>については、西伊豆町の区域内における工程により、当該返礼品等の価値の<span style="border-bottom:1px solid #000;display:inline-block;min-width:40px;padding:0 2px;text-align:center"><strong>' + p1(ratio) + '%</strong></span>が生じていることを証明します。<br>' +
-    '上記については、以下の算出方法（該当する算出方法に☑）により算出しています。</p>' +
+    '<p style="margin:8px 0">　<span style="border-bottom:1px solid #000;display:inline-block;min-width:220px;padding:0 2px">' + esc(shohin) + '</span>については、西伊豆町の区域内における工程により、当該返礼品等の価値の<span style="border-bottom:1px solid #000;display:inline-block;min-width:40px;padding:0 2px;text-align:center"><strong>' + p1(ratio) + '%</strong></span>が生じていることを証明します。<br>上記については、以下の算出方法（該当する算出方法に☑）により算出しています。</p>' +
 
     '<div style="margin:6px 0">' +
     '<span style="width:14px;height:14px;border:1px solid #000;display:inline-block;text-align:center;line-height:14px;font-size:11px;vertical-align:middle;margin-right:3px">☑</span>' +
     '<strong>総務大臣が定める標準的な算出方法</strong><br>' +
     '<span style="font-size:11px;padding-left:17px">※標準的な算出方法における算出基礎は以下のとおり。</span><br>' +
     '<div style="padding-left:17px;font-size:12px;margin:3px 0">' +
-    'A：当該地方団体による返礼品等の調達費用　<span style="border-bottom:1px solid #000;display:inline-block;min-width:80px;text-align:right;padding:0 2px"><strong>' + fmt(A) + '</strong></span>円（税込）<br>' +
+    'A：調達費用　<span style="border-bottom:1px solid #000;display:inline-block;min-width:80px;text-align:right;padding:0 2px"><strong>' + fmt(A) + '</strong></span>円（税込）<br>' +
     'B：区域外で生じた費用　<span style="border-bottom:1px solid #000;display:inline-block;min-width:80px;text-align:right;padding:0 2px"><strong>' + fmt(B) + '</strong></span>円（税込）' + naiwakeRow + '</div></div>' +
 
     '<div style="margin:6px 0">' +
@@ -571,46 +550,46 @@ function downloadPDF() {
     '<span style="font-size:11px;padding-left:17px">※その他の算出方法とする理由及びその算出方法の詳細は以下のとおり。</span>' +
     '<div style="border:1px solid #000;margin:4px 0;min-height:32px;padding:4px 8px"></div></div>' +
 
-    '<p style="margin:6px 0">製造・加工地：<span style="border-bottom:1px solid #000;display:inline-block;min-width:120px;padding:0 2px">' + esc(seizochi) + '</span>　' +
-    '一般販売価格：<span style="border-bottom:1px solid #000;display:inline-block;min-width:70px;text-align:right;padding:0 2px"><strong>' + fmt(hanbai) + '</strong></span>円（税込）' +
+    '<p style="margin:6px 0">製造・加工地：<span style="border-bottom:1px solid #000;display:inline-block;min-width:120px;padding:0 2px">' + esc(seizochi) + '</span>　一般販売価格：<span style="border-bottom:1px solid #000;display:inline-block;min-width:70px;text-align:right;padding:0 2px"><strong>' + fmt(hanbai) + '</strong></span>円（税込）' +
     '<span style="font-size:10px;color:' + (hanbaiOk ? '#27500A' : '#A32D2D') + ';margin-left:4px">' + (hanbaiOk ? '✓' : '✗ 要確認') + '</span></p>' +
 
-    '<p style="margin:4px 0;font-size:11px">下記の事項に同意します。</p>' +
+    '<p style="margin:4px 0;font-size:11px">なお、当該返礼品等を取り扱うに当たって、下記の事項に同意します。</p>' +
     '<ul style="font-size:11px;margin:2px 0 4px 14px;line-height:1.6;list-style:disc">' +
     '<li style="margin-bottom:2px">本証明書の提出先以外の都道府県又は市区町村の第3号の返礼品等として取り扱わないこと。</li>' +
     '<li>付加価値の算出方法等について、地方団体の求めに応じ、必要な説明や資料提供等を行うこと。</li>' +
     '</ul>' +
 
-    '<div style="border:1px solid #000;padding:8px 10px;margin-top:10px;font-size:12px;line-height:1.9">' +
-    '証明日：' + today() +
-    '</div>' +
+    '<div style="border:1px solid #000;padding:8px 10px;margin-top:10px;font-size:12px">' +
+    '証明日：' + today() + '</div>' +
 
-    '<div style="font-size:10px;color:#888;text-align:center;margin-top:8px">西伊豆町 産業振興課　地場産品基準第3号チェックシート　' + today() + '</div>' +
-    '</div>';
+    '<div style="font-size:10px;color:#888;text-align:center;margin-top:8px">西伊豆町 産業振興課　地場産品基準第3号チェックシート　' + today() + '</div>';
 
-  document.getElementById('pdf-content').innerHTML = certHtml;
-  document.getElementById('pdf-overlay').style.display = 'block';
+  document.getElementById('cert-content').innerHTML = html;
+  document.getElementById('preview-overlay').style.display = 'block';
   window.scrollTo(0, 0);
 }
 
-function closePDFOverlay() {
-  document.getElementById('pdf-overlay').style.display = 'none';
-  document.getElementById('pdf-content').innerHTML = '';
+function closePreview() {
+  document.getElementById('preview-overlay').style.display = 'none';
 }
 
-
 function resetForm() {
-  var ids = ['jigyosha', 'tantou', 'mail-cc', 'seizochi', 'valA', 'valB1', 'valB2', 'valB3', 'hanbai', 'naiwake1', 'naiwake2', 'naiwake3'];
+  var ids = ['jigyosha','tantou','mail-cc','valA','valB1','valB2','valB3','hanbai','naiwake1','naiwake2','naiwake3'];
   for (var i = 0; i < ids.length; i++) {
     var el = document.getElementById(ids[i]);
     if (el) el.value = '';
   }
+  document.getElementById('valB1').value = '0';
+  document.getElementById('valB2').value = '0';
+  document.getElementById('valB3').value = '0';
+  document.getElementById('seizochi').value = '静岡県西伊豆町';
+  document.getElementById('b-total-disp').textContent = '0円';
+  document.getElementById('hanbai-check').textContent = '';
+
   var sel = document.getElementById('shohin-select');
   var txt = document.getElementById('shohin-text');
-  sel.style.display = 'none';
-  sel.innerHTML = '';
-  txt.style.display = 'block';
-  txt.value = '';
+  sel.style.display = 'none'; sel.innerHTML = '';
+  txt.style.display = 'block'; txt.value = '';
   txt.placeholder = '事業者を選ぶと商品リストが表示されます';
   txt.disabled = true;
   document.getElementById('mode-toggle').style.display = 'none';
@@ -620,23 +599,18 @@ function resetForm() {
   document.getElementById('live-row').style.opacity = '.3';
   document.getElementById('live-val').textContent   = '—';
   document.getElementById('live-pct').textContent   = '—';
-  document.getElementById('valB').value = '0';
-  var tot = document.getElementById('valB-total');
-  if (tot) tot.textContent = '0円';
-  var hc = document.getElementById('hanbai-check');
-  hc.className = 'hanbai-check';
-  hc.textContent = '';
-  var errEls = ['jigyosha', 'shohin-select', 'shohin-text', 'tantou', 'seizochi', 'valA', 'valB', 'hanbai'];
+
+  var errEls = ['jigyosha','shohin-select','shohin-text','tantou','valA','hanbai','seizochi'];
   for (var j = 0; j < errEls.length; j++) {
     var el2 = document.getElementById(errEls[j]);
     if (el2) el2.classList.remove('err');
   }
-  var msgEls = ['err-jigyosha', 'err-shohin', 'err-tantou', 'err-seizochi', 'err-valA', 'err-valB', 'err-hanbai'];
+  var msgEls = ['err-jigyosha','err-shohin','err-tantou','err-valA','err-hanbai','err-seizochi'];
   for (var k = 0; k < msgEls.length; k++) {
     document.getElementById(msgEls[k]).style.display = 'none';
   }
   currentMode = 'list';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top:0, behavior:'smooth' });
 }
 </script>
 </body>
