@@ -74,12 +74,19 @@ footer{text-align:center;font-size:11px;color:#bbb;padding:1.5rem 0 2rem}
   #pdf-overlay { display: none; }
 }
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
-<div id="pdf-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:9999;overflow:auto;padding:0">
-  <div id="pdf-saving" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,.9);z-index:10000;display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px"><p style="font-size:15px;font-weight:600;color:#185FA5">画像を生成中...</p></div>
+<div id="pdf-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#f0f0f0;z-index:9999;overflow:auto">
+  <div style="background:#185FA5;color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10">
+    <div>
+      <div style="font-size:13px;font-weight:600">証明書プレビュー</div>
+      <div style="font-size:11px;opacity:.85">この画面をスクリーンショットして送付してください</div>
+    </div>
+    <button onclick="closePDFOverlay()" style="background:rgba(255,255,255,.2);color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:13px;font-weight:600;cursor:pointer">✕ 閉じる</button>
+  </div>
+  <div style="padding:12px">
   <div id="pdf-content"></div>
+  </div>
 </div>
 <div class="wrap">
 
@@ -202,7 +209,7 @@ footer{text-align:center;font-size:11px;color:#bbb;padding:1.5rem 0 2rem}
   <div class="doc-title">証明文書（メール本文）— 内容を確認してから送信してください</div>
   <div class="doc-body" id="doc-body"></div>
   <button class="mail-btn" onclick="sendMail()">メールを送信する</button>
-  <button class="pdf-btn" onclick="downloadPDF()">証明書を画像で保存</button>
+  <button class="pdf-btn" onclick="downloadPDF()">証明書プレビューを表示</button>
   <div class="mail-note" id="mail-note"></div>
 </div>
 
@@ -492,85 +499,63 @@ function downloadPDF() {
   var ratio    = A > 0 ? inVal / A * 100 : 0;
   var hanbaiOk = hanbai >= A;
   var naiwakeRow = naiwake
-    ? '<br><span style="font-size:9pt;color:#555">　Bの内訳：' + esc(naiwake) + '</span>'
+    ? '<br><span style="font-size:9pt;color:#444">　Bの内訳：' + esc(naiwake) + '</span>'
     : '';
 
-  var pdfHtml =
-    '<div id="cert-body" style="font-family:serif;font-size:13px;line-height:1.7;color:#000;background:#fff;width:680px;padding:40px 48px;box-sizing:border-box">' +
+  var certHtml =
+    '<div style="background:#fff;margin:0 auto;max-width:600px;padding:24px 28px;font-family:serif;font-size:13px;line-height:1.7;color:#000">' +
 
     '<div style="margin-bottom:8px">西伊豆町長　殿</div>' +
 
     '<div style="text-align:right;font-size:12px;margin-bottom:10px;line-height:1.9">【返礼品等の製造等を行う者】<br>' +
-    '住所　<span style="border-bottom:1px solid #000;display:inline-block;min-width:180px;padding:0 2px">　</span><br>' +
-    '事業者名　<span style="border-bottom:1px solid #000;display:inline-block;min-width:160px;padding:0 2px">' + esc(jigyosha) + '</span><br>' +
-    '代表者職・氏名　<span style="border-bottom:1px solid #000;display:inline-block;min-width:140px;padding:0 2px">' + esc(tantou) + '</span></div>' +
+    '住所　<span style="border-bottom:1px solid #000;display:inline-block;min-width:160px">　</span><br>' +
+    '事業者名　<span style="border-bottom:1px solid #000;display:inline-block;min-width:150px;padding:0 2px">' + esc(jigyosha) + '</span><br>' +
+    '代表者職・氏名　<span style="border-bottom:1px solid #000;display:inline-block;min-width:130px;padding:0 2px">' + esc(tantou) + '</span></div>' +
 
-    '<p style="margin:10px 0">　<span style="border-bottom:1px solid #000;display:inline-block;min-width:260px;padding:0 2px">' + esc(shohin) + '</span>については、西伊豆町の区域内における工程により、当該返礼品等の価値の<span style="border-bottom:1px solid #000;display:inline-block;min-width:44px;padding:0 2px;text-align:center"><strong>' + p1(ratio) + '%</strong></span>が生じていることを証明します。<br>' +
+    '<p style="margin:8px 0">　<span style="border-bottom:1px solid #000;display:inline-block;min-width:220px;padding:0 2px">' + esc(shohin) + '</span>については、西伊豆町の区域内における工程により、当該返礼品等の価値の<span style="border-bottom:1px solid #000;display:inline-block;min-width:40px;padding:0 2px;text-align:center"><strong>' + p1(ratio) + '%</strong></span>が生じていることを証明します。<br>' +
     '上記については、以下の算出方法（該当する算出方法に☑）により算出しています。</p>' +
 
-    '<div style="margin:8px 0 6px">' +
+    '<div style="margin:6px 0">' +
     '<span style="width:14px;height:14px;border:1px solid #000;display:inline-block;text-align:center;line-height:14px;font-size:11px;vertical-align:middle;margin-right:3px">☑</span>' +
     '<strong>総務大臣が定める標準的な算出方法</strong><br>' +
-    '<span style="font-size:11px;margin-left:17px">※標準的な算出方法における算出基礎は以下のとおり。</span><br>' +
-    '<div style="padding-left:17px;font-size:12px;margin:4px 0">' +
-    'A：当該地方団体による返礼品等の調達費用　<span style="border-bottom:1px solid #000;display:inline-block;min-width:90px;padding:0 2px;text-align:right"><strong>' + fmt(A) + '</strong></span>円（税込）<br>' +
-    'B：当該返礼品等の製造・販売等のために当該地方団体の区域外で生じた費用　<span style="border-bottom:1px solid #000;display:inline-block;min-width:90px;padding:0 2px;text-align:right"><strong>' + fmt(B) + '</strong></span>円（税込）' + naiwakeRow + '</div></div>' +
+    '<span style="font-size:11px;padding-left:17px">※標準的な算出方法における算出基礎は以下のとおり。</span><br>' +
+    '<div style="padding-left:17px;font-size:12px;margin:3px 0">' +
+    'A：当該地方団体による返礼品等の調達費用　<span style="border-bottom:1px solid #000;display:inline-block;min-width:80px;text-align:right;padding:0 2px"><strong>' + fmt(A) + '</strong></span>円（税込）<br>' +
+    'B：区域外で生じた費用　<span style="border-bottom:1px solid #000;display:inline-block;min-width:80px;text-align:right;padding:0 2px"><strong>' + fmt(B) + '</strong></span>円（税込）' + naiwakeRow + '</div></div>' +
 
-    '<div style="margin:8px 0">' +
+    '<div style="margin:6px 0">' +
     '<span style="width:14px;height:14px;border:1px solid #000;display:inline-block;text-align:center;line-height:14px;font-size:11px;vertical-align:middle;margin-right:3px">□</span>' +
     '<strong>その他の算出方法</strong><br>' +
-    '<span style="font-size:11px;margin-left:17px">※その他の算出方法とする理由及びその算出方法の詳細は以下のとおり。</span>' +
-    '<div style="border:1px solid #000;padding:6px 10px;margin:4px 0;min-height:36px"></div></div>' +
+    '<span style="font-size:11px;padding-left:17px">※その他の算出方法とする理由及びその算出方法の詳細は以下のとおり。</span>' +
+    '<div style="border:1px solid #000;margin:4px 0;min-height:32px;padding:4px 8px"></div></div>' +
 
-    '<p style="margin:8px 0;font-size:13px">また、当該返礼品等の製造・加工地は<span style="border-bottom:1px solid #000;display:inline-block;min-width:130px;padding:0 2px">' + esc(seizochi) + '</span>であり、一般販売価格は<span style="border-bottom:1px solid #000;display:inline-block;min-width:80px;padding:0 2px;text-align:right"><strong>' + fmt(hanbai) + '</strong></span>円（税込）です。' +
-    '<span style="font-size:10px;color:' + (hanbaiOk ? '#27500A' : '#A32D2D') + ';margin-left:4px">' + (hanbaiOk ? '（✓ A以上）' : '（✗ 要確認）') + '</span></p>' +
+    '<p style="margin:6px 0">製造・加工地：<span style="border-bottom:1px solid #000;display:inline-block;min-width:120px;padding:0 2px">' + esc(seizochi) + '</span>　' +
+    '一般販売価格：<span style="border-bottom:1px solid #000;display:inline-block;min-width:70px;text-align:right;padding:0 2px"><strong>' + fmt(hanbai) + '</strong></span>円（税込）' +
+    '<span style="font-size:10px;color:' + (hanbaiOk ? '#27500A' : '#A32D2D') + ';margin-left:4px">' + (hanbaiOk ? '✓' : '✗ 要確認') + '</span></p>' +
 
-    '<p style="margin:6px 0;font-size:12px">なお、当該返礼品等を取り扱うに当たって、下記の事項に同意します。</p>' +
-    '<ul style="font-size:11px;margin:4px 0 4px 16px;line-height:1.6;list-style:disc">' +
-    '<li style="margin-bottom:3px">当該返礼品等については、地場産品基準（平成31年総務省告示第179号第5条）第8号イ〜ハの返礼品等として提出先以外の都道府県又は市区町村が取り扱う場合を除き、本証明書の提出先以外の都道府県又は市区町村の第3号の返礼品等として取り扱わないこと。</li>' +
-    '<li>当該返礼品等の付加価値の算出方法等について、地方団体の求めに応じ、必要な説明や資料提供等を行うこと。</li>' +
+    '<p style="margin:4px 0;font-size:11px">下記の事項に同意します。</p>' +
+    '<ul style="font-size:11px;margin:2px 0 4px 14px;line-height:1.6;list-style:disc">' +
+    '<li style="margin-bottom:2px">本証明書の提出先以外の都道府県又は市区町村の第3号の返礼品等として取り扱わないこと。</li>' +
+    '<li>付加価値の算出方法等について、地方団体の求めに応じ、必要な説明や資料提供等を行うこと。</li>' +
     '</ul>' +
 
-    '<div style="border:1px solid #000;padding:8px 12px;margin-top:12px;font-size:12px;line-height:1.9">' +
-    '<div>証明日：' + today() + '</div>' +
-    '<div>事業者名：' + esc(jigyosha) + '</div>' +
-    '<div>担当者名：' + esc(tantou) + '</div>' +
+    '<div style="border:1px solid #000;padding:8px 10px;margin-top:10px;font-size:12px;line-height:1.9">' +
+    '証明日：' + today() + '<br>' +
+    '事業者名：' + esc(jigyosha) + '<br>' +
+    '担当者名：' + esc(tantou) +
     '</div>' +
 
-    '<div style="font-size:10px;color:#555;margin-top:6px;line-height:1.6">' +
-    '※製造・加工地：国内は都道府県名・市区町村名、国外は国名。　一般販売価格：非売品の場合は類似製品の通常価格。' +
-    '</div>' +
-
-    '<div style="font-size:10px;color:#aaa;text-align:center;margin-top:8px">西伊豆町 産業振興課　地場産品基準第3号チェックシート　' + today() + '</div>' +
+    '<div style="font-size:10px;color:#888;text-align:center;margin-top:8px">西伊豆町 産業振興課　地場産品基準第3号チェックシート　' + today() + '</div>' +
     '</div>';
 
-  var overlay = document.getElementById('pdf-overlay');
-  var pdfContent = document.getElementById('pdf-content');
-  pdfContent.innerHTML = pdfHtml;
-  overlay.style.display = 'block';
+  document.getElementById('pdf-content').innerHTML = certHtml;
+  document.getElementById('pdf-overlay').style.display = 'block';
   window.scrollTo(0, 0);
+}
 
-  setTimeout(function() {
-    var target = document.getElementById('cert-body');
-    html2canvas(target, {
-      scale: 2,
-      backgroundColor: '#ffffff',
-      useCORS: true,
-      logging: false
-    }).then(function(canvas) {
-      var link = document.createElement('a');
-      var filename = 'shomei_' + jigyosha.replace(/[^a-zA-Z0-9　-鿿]/g, '') + '_' + today().replace(/[^\d]/g, '') + '.jpg';
-      link.download = filename;
-      link.href = canvas.toDataURL('image/jpeg', 0.95);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      overlay.style.display = 'none';
-    }).catch(function() {
-      overlay.style.display = 'none';
-      alert('画像の生成に失敗しました。スクリーンショットで保存してください。');
-    });
-  }, 400);
+function closePDFOverlay() {
+  document.getElementById('pdf-overlay').style.display = 'none';
+  document.getElementById('pdf-content').innerHTML = '';
 }
 
 
