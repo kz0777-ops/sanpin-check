@@ -371,6 +371,7 @@ function liveCalc() {
 
 function validate() {
   var ok = true;
+  var debug = [];
   var checks = [
     { id: 'jigyosha', err: 'err-jigyosha', fn: function(v) { return v !== ''; } },
     { id: 'tantou',   err: 'err-tantou',   fn: function(v) { return v.trim() !== ''; } },
@@ -385,7 +386,7 @@ function validate() {
     var pass = c.fn(el.value);
     el.classList.toggle('err', !pass);
     document.getElementById(c.err).style.display = pass ? 'none' : 'block';
-    if (!pass) ok = false;
+    if (!pass) { ok = false; debug.push(c.id + ':NG(val=' + el.value + ')'); }
   }
   var sn = getShohinName();
   if (!sn) {
@@ -402,6 +403,7 @@ function validate() {
     document.getElementById('hanbai').classList.add('err');
     ok = false;
   }
+  if (!ok) console.log('validate NG:', debug.join(', '));
   return ok;
 }
 
