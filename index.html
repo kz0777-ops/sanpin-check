@@ -163,7 +163,7 @@ footer{text-align:center;font-size:11px;color:#bbb;padding:1.5rem 0 2rem}
       <div style="margin-bottom:10px">
         <div style="font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:2px">原材料仕入れ</div>
         <div style="font-size:11px;color:#888;margin-bottom:5px">区域外から仕入れた原材料の費用（円）</div>
-        <input type="number" id="valB1" placeholder="0" min="0" oninput="liveCalc()" style="width:100%;font-size:15px;padding:7px 10px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a;outline:none">
+        <input type="number" id="valB1" placeholder="0" min="0" value="0" oninput="liveCalc()" style="width:100%;font-size:15px;padding:7px 10px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a;outline:none">
         <textarea id="naiwake1" placeholder="例：焼津港水揚げのかつお（静岡市業者）" style="width:100%;font-size:13px;padding:7px 10px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a;outline:none;resize:none;height:52px;margin-top:5px"></textarea>
       </div>
 
@@ -336,9 +336,6 @@ function getShohinName() {
 
 function liveCalc() {
   var A  = parseFloat(document.getElementById('valA').value);
-  var B1 = parseFloat(document.getElementById('valB1').value) || 0;
-  var B2 = parseFloat(document.getElementById('valB2').value) || 0;
-  var B3 = parseFloat(document.getElementById('valB3').value) || 0;
   var B  = B1 + B2 + B3;
   document.getElementById('valB').value = B;
   var totalEl = document.getElementById('valB-total');
@@ -411,7 +408,10 @@ function validate() {
 function judge() {
   if (!validate()) return;
   var A        = parseFloat(document.getElementById('valA').value);
-  var B        = parseFloat(document.getElementById('valB').value);
+  var B1v = parseFloat(document.getElementById('valB1').value) || 0;
+  var B2v = parseFloat(document.getElementById('valB2').value) || 0;
+  var B3v = parseFloat(document.getElementById('valB3').value) || 0;
+  var B   = B1v + B2v + B3v;
   var hanbai   = parseFloat(document.getElementById('hanbai').value);
   var jigyosha = document.getElementById('jigyosha').value;
   var shohin   = getShohinName();
@@ -420,13 +420,10 @@ function judge() {
   var n1 = document.getElementById('naiwake1').value.trim();
   var n2 = document.getElementById('naiwake2').value.trim();
   var n3 = document.getElementById('naiwake3').value.trim();
-  var B1 = parseFloat(document.getElementById('valB1').value) || 0;
-  var B2 = parseFloat(document.getElementById('valB2').value) || 0;
-  var B3 = parseFloat(document.getElementById('valB3').value) || 0;
   var naiwakeParts = [];
-  if (B1 > 0) naiwakeParts.push('原材料仕入れ ' + fmt(B1) + '円' + (n1 ? '（' + n1 + '）' : ''));
-  if (B2 > 0) naiwakeParts.push('区域外加工 ' + fmt(B2) + '円' + (n2 ? '（' + n2 + '）' : ''));
-  if (B3 > 0) naiwakeParts.push('その他 ' + fmt(B3) + '円' + (n3 ? '（' + n3 + '）' : ''));
+  if (B1v > 0) naiwakeParts.push('原材料仕入れ ' + fmt(B1v) + '円' + (n1 ? '（' + n1 + '）' : ''));
+  if (B2v > 0) naiwakeParts.push('区域外加工 ' + fmt(B2v) + '円' + (n2 ? '（' + n2 + '）' : ''));
+  if (B3v > 0) naiwakeParts.push('その他 ' + fmt(B3v) + '円' + (n3 ? '（' + n3 + '）' : ''));
   var naiwake = naiwakeParts.join(' / ');
   var seizochi = document.getElementById('seizochi').value.trim();
   var inVal    = A - B;
@@ -525,18 +522,18 @@ function downloadPDF() {
   var tantou   = document.getElementById('tantou').value.trim();
   var seizochi = document.getElementById('seizochi').value.trim();
   var A        = parseFloat(document.getElementById('valA').value);
-  var B        = parseFloat(document.getElementById('valB').value);
+  var B1v = parseFloat(document.getElementById('valB1').value) || 0;
+  var B2v = parseFloat(document.getElementById('valB2').value) || 0;
+  var B3v = parseFloat(document.getElementById('valB3').value) || 0;
+  var B   = B1v + B2v + B3v;
   var hanbai   = parseFloat(document.getElementById('hanbai').value);
   var n1 = document.getElementById('naiwake1').value.trim();
   var n2 = document.getElementById('naiwake2').value.trim();
   var n3 = document.getElementById('naiwake3').value.trim();
-  var B1 = parseFloat(document.getElementById('valB1').value) || 0;
-  var B2 = parseFloat(document.getElementById('valB2').value) || 0;
-  var B3 = parseFloat(document.getElementById('valB3').value) || 0;
   var naiwakeParts = [];
-  if (B1 > 0) naiwakeParts.push('原材料仕入れ ' + fmt(B1) + '円' + (n1 ? '（' + n1 + '）' : ''));
-  if (B2 > 0) naiwakeParts.push('区域外加工 ' + fmt(B2) + '円' + (n2 ? '（' + n2 + '）' : ''));
-  if (B3 > 0) naiwakeParts.push('その他 ' + fmt(B3) + '円' + (n3 ? '（' + n3 + '）' : ''));
+  if (B1v > 0) naiwakeParts.push('原材料仕入れ ' + fmt(B1v) + '円' + (n1 ? '（' + n1 + '）' : ''));
+  if (B2v > 0) naiwakeParts.push('区域外加工 ' + fmt(B2v) + '円' + (n2 ? '（' + n2 + '）' : ''));
+  if (B3v > 0) naiwakeParts.push('その他 ' + fmt(B3v) + '円' + (n3 ? '（' + n3 + '）' : ''));
   var naiwake = naiwakeParts.join(' / ');
   var inVal    = A - B;
   var ratio    = A > 0 ? inVal / A * 100 : 0;
