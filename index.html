@@ -17,12 +17,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Meiryo',sans-
 .field:last-child{margin-bottom:0}
 .field label{display:block;font-size:14px;font-weight:600;color:#1a1a1a;margin-bottom:4px}
 .field .desc{font-size:11px;color:#888;margin-bottom:6px;line-height:1.5}
-.field input,.field select,.field textarea{
-  width:100%;font-size:15px;padding:8px 10px;
-  border:1px solid #ddd;border-radius:8px;
-  background:#fafafa;color:#1a1a1a;
-  outline:none;transition:border-color .15s
-}
+.field input,.field select,.field textarea{width:100%;font-size:15px;padding:8px 10px;border:1px solid #ddd;border-radius:8px;background:#fafafa;color:#1a1a1a;outline:none;transition:border-color .15s}
 .field input:focus,.field select:focus,.field textarea:focus{border-color:#185FA5;background:#fff}
 .field textarea{height:72px;resize:none}
 .field input[type=number]{-moz-appearance:textfield}
@@ -35,7 +30,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Meiryo',sans-
 .calc-label{font-size:11px;color:#888;margin-bottom:4px}
 .calc-value{font-size:20px;font-weight:700;color:#1a1a1a}
 .calc-sub{font-size:10px;color:#aaa;margin-top:2px}
-.submit-btn{width:100%;padding:.85rem;background:#185FA5;color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;margin-bottom:.75rem;transition:opacity .15s}
+.hanbai-check{font-size:12px;margin-top:4px;display:none}
+.hanbai-ok{color:#27500A;display:block}
+.hanbai-ng{color:#A32D2D;display:block}
+.submit-btn{width:100%;padding:.85rem;background:#185FA5;color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;margin-bottom:.75rem}
 .submit-btn:active{opacity:.8}
 .result-card{border-radius:12px;padding:1.1rem 1.25rem;border:2px solid;margin-bottom:.75rem;display:none}
 .result-card.visible{display:block}
@@ -53,9 +51,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Meiryo',sans-
 .doc-card{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:.75rem;display:none}
 .doc-card.visible{display:block}
 .doc-title{font-size:11px;font-weight:600;color:#888;letter-spacing:.06em;margin-bottom:.75rem}
-.doc-body{font-size:13px;color:#1a1a1a;line-height:2.1;white-space:pre-wrap;background:#f9f9f9;border-radius:8px;padding:.9rem 1rem;margin-bottom:.75rem;border:1px solid #eee}
-.mail-btn{width:100%;padding:.85rem;background:#27500A;color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;margin-bottom:.5rem;transition:opacity .15s}
+.doc-body{font-size:13px;color:#1a1a1a;line-height:2;white-space:pre-wrap;background:#f9f9f9;border-radius:8px;padding:.9rem 1rem;margin-bottom:.75rem;border:1px solid #eee}
+.mail-btn{width:100%;padding:.85rem;background:#27500A;color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;margin-bottom:.5rem}
 .mail-btn:active{opacity:.8}
+.pdf-btn{width:100%;padding:.85rem;background:#fff;color:#27500A;border:2px solid #27500A;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:.5rem}
+.pdf-btn:active{opacity:.8}
 .mail-note{font-size:11px;color:#888;line-height:1.7;text-align:center;margin-bottom:.75rem;white-space:pre-line}
 .reset-btn{width:100%;padding:.7rem;background:#fff;color:#888;border:1px solid #ddd;border-radius:10px;font-size:14px;cursor:pointer}
 .ng-note{background:#f5f5f5;border-radius:8px;padding:.75rem 1rem;font-size:13px;color:#666;line-height:1.6;margin-bottom:.75rem;display:none}
@@ -126,7 +126,7 @@ footer{text-align:center;font-size:11px;color:#bbb;padding:1.5rem 0 2rem}
 </div>
 
 <div class="card">
-  <div class="card-title">費用の入力</div>
+  <div class="card-title">費用・価格の入力</div>
 
   <div class="field">
     <label>A：調達費用（精算額・税込）<span class="required">*</span></label>
@@ -143,9 +143,24 @@ footer{text-align:center;font-size:11px;color:#bbb;padding:1.5rem 0 2rem}
   </div>
 
   <div class="field">
+    <label>一般販売価格（税込）<span class="required">*</span></label>
+    <div class="desc">一般消費者向けの通常販売価格（円）。調達費用A以上である必要があります。</div>
+    <input type="number" id="hanbai" placeholder="例：2500" min="0" oninput="liveCalc()">
+    <div class="err-msg" id="err-hanbai">一般販売価格を入力してください</div>
+    <div class="hanbai-check" id="hanbai-check"></div>
+  </div>
+
+  <div class="field">
     <label>Bの内訳</label>
     <div class="desc">何をどこから仕入れたか、具体的に教えてください。</div>
     <textarea id="naiwake" placeholder="例：焼津港水揚げのかつお（仕入れ先：静岡市業者）800円"></textarea>
+  </div>
+
+  <div class="field">
+    <label>製造・加工地<span class="required">*</span></label>
+    <div class="desc">商品の製造・加工が行われた場所（例：静岡県西伊豆町）</div>
+    <input type="text" id="seizochi" placeholder="例：静岡県西伊豆町">
+    <div class="err-msg" id="err-seizochi">製造・加工地を入力してください</div>
   </div>
 
   <div class="calc-row" id="live-row" style="opacity:.3">
@@ -174,6 +189,7 @@ footer{text-align:center;font-size:11px;color:#bbb;padding:1.5rem 0 2rem}
   <div class="doc-title">証明文書（メール本文）— 内容を確認してから送信してください</div>
   <div class="doc-body" id="doc-body"></div>
   <button class="mail-btn" onclick="sendMail()">メールを送信する</button>
+  <button class="pdf-btn" onclick="downloadPDF()">証明書PDFをダウンロード（印刷）</button>
   <div class="mail-note" id="mail-note"></div>
 </div>
 
@@ -185,31 +201,57 @@ footer{text-align:center;font-size:11px;color:#bbb;padding:1.5rem 0 2rem}
 </div>
 
 <script>
-const PRODUCTS = {"西伊豆クリスタルビューホテル":["西伊豆クリスタルビューホテル「宿泊補助券（3,000円分）」","西伊豆クリスタルビューホテル「宿泊補助券（6,000円分）」","西伊豆クリスタルビューホテル「宿泊補助券（9,000円分）」","西伊豆クリスタルビューホテル「宿泊補助券（12,000円分）」","西伊豆クリスタルビューホテル「宿泊補助券（15,000円分）」","西伊豆クリスタルビューホテル「宿泊補助券（30,000円分）」"],"㈱大島水産":["大島水産の「でっかい干物詰合せ」","大島水産の「国産干物詰合せセット」","大島水産の「訳あり干物セット」","大島水産の「さばみりん干し食べ比べセット」","大島水産の「でっかい干物詰合せ定期便」年4回","大島水産の「訳あり干物セット定期便」年4回","大島水産の「国産干物詰合せセット定期便」年4回","大島水産の「でっかい干物詰合せ定期便」年6回","大島水産の「訳あり干物セット定期便」年6回","大島水産の「国産干物詰合せセット定期便」年6回","大島水産の「西伊豆加工干物お試しセット」","大島水産の「訳あり干物詰合せ18枚以上」","大島水産の「新西伊豆加工みりん干しセット」","大島水産の「食べやすさ満点！骨なし干物詰合せ」","大島水産の「特上干物セット」"],"㈲海産センター":["海産屋の「ひもの三昧」","海産屋の「金目鯛ファミリーセット」","海産屋の「金目兄弟」","海産屋の「海産亭詰め合わせ」","海産屋の「贅沢ひもの三昧」","海産屋の「金目三昧」","海産屋の「上金目鯛の煮付けセット」","海産屋の「無添加ひもの太鼓判セット」","海産屋の「訳あり金目鯛の煮付けセット」","海産屋の「人気商品厳選セット」","海産屋の「脂滴る極み干物セット」"],"㈱Enjoy":["海底熟成ワインVOYAGE【シャンパン白2010】","海底熟成ラッセンワイン西伊豆浮島海中ドルフィンズ（TYPEAラベル）","海底熟成ラッセンワイン西伊豆浮島海中ドルフィン（TYPEBラベル）","海底熟成ラッセンワイン西伊豆田子島の夕陽とイルカ（TYPECラベル）","海底熟成ワインVOYAGE【カサーレヴェッキオ2020】","海底熟成ワインVOYAGE【シャトー・モン・ペラ赤2019】","海底熟成ワインVOYAGE【シャトー・モン・ペラ白2020】","海底熟成ワインVOYAGE【シャトー・ラ・カルドンヌ2016】","海底熟成ワインVOYAGE【レ・ザレ・ド・カントメルル2011】","海底熟成ワインVOYAGE【シャトー・ラ・ファヴィエール2019】","海底熟成ワインVOYAGE【ルケディカスタニョーレ2021】","「海底熟成ワインVOYAGE」飲み比べ４本セット"],"カネサ鰹節商店":["ｶﾈｻの「削り節パック大袋入り」","ｶﾈｻの「手火山焙乾づくり削り節セット」","ｶﾈｻの「手火山造りこだわりの詰合せ」","ｶﾈｻの「潮かつお燻焼き３袋セット」","ｶﾈｻの「田子節削りパック化粧箱入り２箱セット」","ｶﾈｻの「しおかつお切り身詰合せ」","ｶﾈｻの「手火山造り素材ボトル詰め合わせ」","ｶﾈｻの「手火山スパイス詰め合わせ」","カネサ鰹節商店の「伝統の潮かつお」【限定30本】","カネサの「厚削り業務用３袋セット」","カネサの「厚削り大容量９袋セット」","カネサ鰹節商店の「伝統の潮かつお」【限定40本】"],"黄金崎クリスタルパーク":["西伊豆ガラス「夕陽グラス」","ガラスのふるさとから贈る「世界に一つだけのガラスセレクション」","西伊豆ガラス「富士山お香立て」","西伊豆ガラス「富士ちょこグラス」","西伊豆ガラス「一輪挿し」","西伊豆ガラス「おやすみランプ」","西伊豆ガラス「富士山らんぷ」","西伊豆ガラス「おうちランプ」"],"須田染物店":["世界で１枚の大漁旗をあなたに！"],"森のカフェ　リトルハート":["西伊豆のふるさとコーヒー"],"株式会社クックランド　堂ヶ島製麺":["堂ヶ島製麺の「海賊焼・海賊ラーメンセット」","かんてんらーめん10本セット"],"御菓子処 サカヤ":["御菓子処 サカヤ「伊豆ぶし」","御菓子処 サカヤ「竹皮万十12個入」","御菓子処 サカヤ「西伊豆愛栗」","御菓子処 サカヤ「人気和洋菓子セット20個入」","御菓子処 サカヤ「西伊豆愛栗・伊豆ぶしセット」"],"㈲三角屋水産":["鈴木太郎商店干物セット「嬉」","三角屋水産の「潮かつおの贈り物」","鈴木太郎商店干物セット「和」","鈴木太郎商店干物セット","鈴木太郎商店干物セット「雅」"],"㈱田子丸":["田子丸の「ポチたまのおやつ詰め合わせ」","田子丸の「西伊豆塩鰹切り身詰め合わせ」","田子丸の「鰹節パック詰め合わせ」","田子丸の「大酒のみの友鰹塩辛セット」","田子丸の「鰹珍味詰め合わせ」","田子丸の「手火山式鰹本枯れ田子節詰合せ」"],"入久水産㈱":["入久水産の「お楽しみ訳あり干物セット」","入久水産の「国産あじの干物セット」","入久水産の「創業120年伝統の味肉厚みりん干しセット」","入久水産の「工場長のいちおし干物セット」","入久水産の「大判干物セット」","入久水産の「厳選上物干物セット」","入久水産の「創業明治の老舗の味手造り干物セット」","入久水産の「鯵（味）くらべセット」","入久水産の「あじの干物が大きすぎちゃってごめんなさい」","入久水産の「あじの干物とあじみりん干しが大きすぎちゃってごめんなさい」"],"㈱藤文":["藤文の「訳あり干物セット28枚以上」","藤文の「ふるさと干物セット」","藤文の「びっくり規格外セット」","藤文の「西風ひものセット」","藤文の「金目鯛しゃぶしゃぶセット」","藤文の「しらす大漁セット」","藤文の「にっぽんの干物セット」","藤文の「2人前セット」","藤文の「金目鯛づくし」","藤文の「お試しセット」","藤文の「伊豆産金目鯛煮付セット」","藤文の「新究極干物セット」","藤文の「びっくり規格外ライト」","藤文の「塩さばスティック（骨なし）」","藤文の「ふるさと干物ライト」","藤文の「よくばりセット」","藤文の「伊豆金目鯛豪快まんぷくセット」","藤文の「金目鯛煮付け・釜揚げしらすセット」","藤文の「とろあじ、とろさば干物セット」","藤文の「真あじ大満足セット」","藤文の「金目大満足セット」","藤文の「桜エビ・しらすセット」","藤文の「にっぽんの干物セット定期便」年６回","藤文の「ふるさとたっぷりセット」","藤文の「ふるさと干物セット定期便」年６回","藤文の「びっくり規格外セット定期便」年６回","藤文の「豪快たっぷりセット」","藤文の「冬の金目鯛熱々セット」","藤文の厳選干物セット「ふるさと定期便」年12回","藤文の「お手ごろ金目鯛煮付セット定期便」年６回","藤文の「ふるさと定期便」年４回","藤文の「ふるさと定期便」年12回","藤文の「お手ごろ金目鯛煮付セット」"]};
+var PRODUCTS = {
+  "西伊豆クリスタルビューホテル": ["西伊豆クリスタルビューホテル「宿泊補助券（3,000円分）」","西伊豆クリスタルビューホテル「宿泊補助券（6,000円分）」","西伊豆クリスタルビューホテル「宿泊補助券（9,000円分）」","西伊豆クリスタルビューホテル「宿泊補助券（12,000円分）」","西伊豆クリスタルビューホテル「宿泊補助券（15,000円分）」","西伊豆クリスタルビューホテル「宿泊補助券（30,000円分）」"],
+  "㈱大島水産": ["大島水産の「でっかい干物詰合せ」","大島水産の「国産干物詰合せセット」","大島水産の「訳あり干物セット」","大島水産の「さばみりん干し食べ比べセット」","大島水産の「西伊豆加工干物お試しセット」","大島水産の「訳あり干物詰合せ18枚以上」","大島水産の「新西伊豆加工みりん干しセット」","大島水産の「食べやすさ満点！骨なし干物詰合せ」","大島水産の「特上干物セット」"],
+  "㈲海産センター": ["海産屋の「ひもの三昧」","海産屋の「金目鯛ファミリーセット」","海産屋の「金目兄弟」","海産屋の「海産亭詰め合わせ」","海産屋の「贅沢ひもの三昧」","海産屋の「金目三昧」","海産屋の「上金目鯛の煮付けセット」","海産屋の「無添加ひもの太鼓判セット」","海産屋の「訳あり金目鯛の煮付けセット」","海産屋の「人気商品厳選セット」","海産屋の「脂滴る極み干物セット」"],
+  "㈱Enjoy": ["海底熟成ワインVOYAGE【シャンパン白2010】","海底熟成ラッセンワイン西伊豆浮島海中ドルフィンズ（TYPEAラベル）","海底熟成ラッセンワイン西伊豆浮島海中ドルフィン（TYPEBラベル）","海底熟成ラッセンワイン西伊豆田子島の夕陽とイルカ（TYPECラベル）","海底熟成ワインVOYAGE【カサーレヴェッキオ2020】","海底熟成ワインVOYAGE【シャトー・モン・ペラ赤2019】","海底熟成ワインVOYAGE【シャトー・モン・ペラ白2020】","海底熟成ワインVOYAGE【シャトー・ラ・カルドンヌ2016】","海底熟成ワインVOYAGE【レ・ザレ・ド・カントメルル2011】","海底熟成ワインVOYAGE【シャトー・ラ・ファヴィエール2019】","海底熟成ワインVOYAGE【ルケディカスタニョーレ2021】","「海底熟成ワインVOYAGE」飲み比べ４本セット"],
+  "カネサ鰹節商店": ["ｶﾈｻの「削り節パック大袋入り」","ｶﾈｻの「手火山焙乾づくり削り節セット」","ｶﾈｻの「手火山造りこだわりの詰合せ」","ｶﾈｻの「潮かつお燻焼き３袋セット」","ｶﾈｻの「田子節削りパック化粧箱入り２箱セット」","ｶﾈｻの「しおかつお切り身詰合せ」","ｶﾈｻの「手火山造り素材ボトル詰め合わせ」","ｶﾈｻの「手火山スパイス詰め合わせ」","カネサ鰹節商店の「伝統の潮かつお」【限定30本】","カネサの「厚削り業務用３袋セット」","カネサの「厚削り大容量９袋セット」","カネサ鰹節商店の「伝統の潮かつお」【限定40本】"],
+  "黄金崎クリスタルパーク": ["西伊豆ガラス「夕陽グラス」","ガラスのふるさとから贈る「世界に一つだけのガラスセレクション」","西伊豆ガラス「富士山お香立て」","西伊豆ガラス「富士ちょこグラス」","西伊豆ガラス「一輪挿し」","西伊豆ガラス「おやすみランプ」","西伊豆ガラス「富士山らんぷ」","西伊豆ガラス「おうちランプ」"],
+  "須田染物店": ["世界で１枚の大漁旗をあなたに！"],
+  "森のカフェ　リトルハート": ["西伊豆のふるさとコーヒー"],
+  "株式会社クックランド　堂ヶ島製麺": ["堂ヶ島製麺の「海賊焼・海賊ラーメンセット」","かんてんらーめん10本セット"],
+  "御菓子処 サカヤ": ["御菓子処 サカヤ「竹皮万十　12個入」","御菓子処 サカヤ「人気和洋菓子セット　20個入」"],
+  "㈲三角屋水産": ["鈴木太郎商店干物セット「嬉」","三角屋水産の「潮かつおの贈り物」","鈴木太郎商店干物セット「和」","鈴木太郎商店干物セット","鈴木太郎商店干物セット「雅」"],
+  "㈱田子丸": ["田子丸の「ポチたまのおやつ　詰め合わせ」","田子丸の「西伊豆　塩鰹切り身　詰め合わせ」","田子丸の「鰹節パック詰め合わせ」","田子丸の「大酒のみの友　鰹塩辛セット」","田子丸の「鰹珍味　詰め合わせ」","田子丸の「手火山式鰹本枯れ　田子節詰合せ」"],
+  "入久水産㈱": ["入久水産の「国産あじの干物セット」"],
+  "㈱藤文": ["藤文の「訳あり干物セット28枚以上」","藤文の「ふるさと干物セット」","藤文の「びっくり規格外セット」","藤文の「西風ひものセット」","藤文の「金目鯛しゃぶしゃぶセット」","藤文の「しらす大漁セット」","藤文の「にっぽんの干物セット」","藤文の「2人前セット」","藤文の「金目鯛づくし」","藤文の「お試しセット」","藤文の「伊豆産金目鯛煮付セット」","藤文の「新究極干物セット」","藤文の「びっくり規格外　ライト」","藤文の「塩さばスティック（骨なし）」","藤文の「ふるさと干物 ライト」","藤文の「よくばりセット」","藤文の「伊豆金目鯛豪快まんぷくセット」","藤文の「金目鯛煮付け・釜揚げしらすセット」","藤文の「ふるさとたっぷりセット」","藤文の「豪快たっぷりセット」","【時期限定】藤文の「冬の金目鯛熱々セット」"]
+};
 
-const MAIL_TO = 'furusato@town.nishiizu.lg.jp';
-const fmt = n => Math.round(n).toLocaleString();
-const p1  = n => n.toFixed(1);
-let currentMode = 'list';
-let mailSubject = '', mailBody = '', mailCc = '';
+var MAIL_TO = 'furusato@town.nishiizu.lg.jp';
+var currentMode = 'list';
+var mailSubject = '';
+var mailBody = '';
+var mailCc = '';
 
-function setMode(mode){
+function fmt(n) { return Math.round(n).toLocaleString(); }
+function p1(n)  { return n.toFixed(1); }
+function esc(s) {
+  return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+function today() {
+  var d = new Date();
+  return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日';
+}
+
+function setMode(mode) {
   currentMode = mode;
-  document.getElementById('shohin-select').style.display = mode==='list' ? 'block' : 'none';
-  document.getElementById('shohin-text').style.display   = mode==='free' ? 'block' : 'none';
-  document.getElementById('tab-list').classList.toggle('on', mode==='list');
-  document.getElementById('tab-free').classList.toggle('on', mode==='free');
+  document.getElementById('shohin-select').style.display = mode === 'list' ? 'block' : 'none';
+  document.getElementById('shohin-text').style.display   = mode === 'free' ? 'block' : 'none';
+  document.getElementById('tab-list').classList.toggle('on', mode === 'list');
+  document.getElementById('tab-free').classList.toggle('on', mode === 'free');
   clearShohinErr();
 }
 
-function onJigyoshaChange(){
-  const j   = document.getElementById('jigyosha').value;
-  const sel  = document.getElementById('shohin-select');
-  const txt  = document.getElementById('shohin-text');
-  const tog  = document.getElementById('mode-toggle');
+function onJigyoshaChange() {
+  var j   = document.getElementById('jigyosha').value;
+  var sel = document.getElementById('shohin-select');
+  var txt = document.getElementById('shohin-text');
+  var tog = document.getElementById('mode-toggle');
   document.getElementById('jigyosha').classList.remove('err');
   document.getElementById('err-jigyosha').style.display = 'none';
-  if(!j){
+
+  if (!j) {
     sel.style.display = 'none';
     txt.style.display = 'block';
     txt.value = '';
@@ -218,14 +260,19 @@ function onJigyoshaChange(){
     tog.style.display = 'none';
     return;
   }
-  const list = PRODUCTS[j];
-  const hasList = list && list.length > 0;
-  if(hasList){
-    sel.innerHTML = '<option value="">商品を選んでください</option>' +
-      list.map(p => `<option value="${p}">${p}</option>`).join('');
+
+  var list = PRODUCTS[j];
+  var hasList = list && list.length > 0;
+
+  if (hasList) {
+    var opts = '<option value="">商品を選んでください</option>';
+    for (var i = 0; i < list.length; i++) {
+      opts += '<option value="' + esc(list[i]) + '">' + esc(list[i]) + '</option>';
+    }
+    sel.innerHTML = opts;
     tog.style.display = 'flex';
-    txt.style.display = 'none';
     sel.style.display = 'block';
+    txt.style.display = 'none';
     currentMode = 'list';
     document.getElementById('tab-list').classList.add('on');
     document.getElementById('tab-free').classList.remove('on');
@@ -241,23 +288,23 @@ function onJigyoshaChange(){
   clearShohinErr();
 }
 
-function clearShohinErr(){
+function clearShohinErr() {
   document.getElementById('shohin-select').classList.remove('err');
   document.getElementById('shohin-text').classList.remove('err');
   document.getElementById('err-shohin').style.display = 'none';
 }
 
-function getShohinName(){
-  return currentMode === 'list'
-    ? document.getElementById('shohin-select').value
-    : document.getElementById('shohin-text').value.trim();
+function getShohinName() {
+  if (currentMode === 'list') return document.getElementById('shohin-select').value;
+  return document.getElementById('shohin-text').value.trim();
 }
 
-function liveCalc(){
-  const A = parseFloat(document.getElementById('valA').value);
-  const B = parseFloat(document.getElementById('valB').value);
-  const row = document.getElementById('live-row');
-  if(!isNaN(A) && !isNaN(B) && A > 0){
+function liveCalc() {
+  var A = parseFloat(document.getElementById('valA').value);
+  var B = parseFloat(document.getElementById('valB').value);
+  var H = parseFloat(document.getElementById('hanbai').value);
+  var row = document.getElementById('live-row');
+  if (!isNaN(A) && !isNaN(B) && A > 0) {
     document.getElementById('live-val').textContent = fmt(A - B) + '円';
     document.getElementById('live-pct').textContent = p1((A - B) / A * 100) + '%';
     row.style.opacity = '1';
@@ -266,116 +313,136 @@ function liveCalc(){
     document.getElementById('live-pct').textContent = '—';
     row.style.opacity = '.3';
   }
+  var hc = document.getElementById('hanbai-check');
+  if (!isNaN(A) && !isNaN(H) && H > 0 && A > 0) {
+    if (H >= A) {
+      hc.className = 'hanbai-check hanbai-ok';
+      hc.textContent = '✓ 調達費用A以上です（' + fmt(H) + '円 ≥ ' + fmt(A) + '円）';
+    } else {
+      hc.className = 'hanbai-check hanbai-ng';
+      hc.textContent = '✗ 調達費用A（' + fmt(A) + '円）より低くなっています';
+    }
+  } else {
+    hc.className = 'hanbai-check';
+    hc.textContent = '';
+  }
 }
 
-function validate(){
-  let ok = true;
-  const checks = [
-    {id:'jigyosha', err:'err-jigyosha', fn: v => v !== ''},
-    {id:'tantou',   err:'err-tantou',   fn: v => v.trim() !== ''},
-    {id:'valA',     err:'err-valA',     fn: v => v !== '' && parseFloat(v) > 0},
-    {id:'valB',     err:'err-valB',     fn: v => v !== '' && !isNaN(parseFloat(v))},
+function validate() {
+  var ok = true;
+  var checks = [
+    { id: 'jigyosha', err: 'err-jigyosha', fn: function(v) { return v !== ''; } },
+    { id: 'tantou',   err: 'err-tantou',   fn: function(v) { return v.trim() !== ''; } },
+    { id: 'valA',     err: 'err-valA',     fn: function(v) { return v !== '' && parseFloat(v) > 0; } },
+    { id: 'valB',     err: 'err-valB',     fn: function(v) { return v !== '' && !isNaN(parseFloat(v)); } },
+    { id: 'hanbai',   err: 'err-hanbai',   fn: function(v) { return v !== '' && parseFloat(v) > 0; } },
+    { id: 'seizochi', err: 'err-seizochi', fn: function(v) { return v.trim() !== ''; } }
   ];
-  checks.forEach(c => {
-    const el = document.getElementById(c.id);
-    const pass = c.fn(el.value);
+  for (var i = 0; i < checks.length; i++) {
+    var c  = checks[i];
+    var el = document.getElementById(c.id);
+    var pass = c.fn(el.value);
     el.classList.toggle('err', !pass);
     document.getElementById(c.err).style.display = pass ? 'none' : 'block';
-    if(!pass) ok = false;
-  });
-  const sn = getShohinName();
-  if(!sn){
-    if(currentMode === 'list') document.getElementById('shohin-select').classList.add('err');
+    if (!pass) ok = false;
+  }
+  var sn = getShohinName();
+  if (!sn) {
+    if (currentMode === 'list') document.getElementById('shohin-select').classList.add('err');
     else document.getElementById('shohin-text').classList.add('err');
     document.getElementById('err-shohin').style.display = 'block';
     ok = false;
-  } else { clearShohinErr(); }
+  } else {
+    clearShohinErr();
+  }
+  var Av = parseFloat(document.getElementById('valA').value);
+  var Hv = parseFloat(document.getElementById('hanbai').value);
+  if (!isNaN(Av) && !isNaN(Hv) && Hv < Av) {
+    document.getElementById('hanbai').classList.add('err');
+    ok = false;
+  }
   return ok;
 }
 
-function today(){
-  const d = new Date();
-  return `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
-}
+function judge() {
+  if (!validate()) return;
+  var A        = parseFloat(document.getElementById('valA').value);
+  var B        = parseFloat(document.getElementById('valB').value);
+  var hanbai   = parseFloat(document.getElementById('hanbai').value);
+  var jigyosha = document.getElementById('jigyosha').value;
+  var shohin   = getShohinName();
+  var tantou   = document.getElementById('tantou').value.trim();
+  var cc       = document.getElementById('mail-cc').value.trim();
+  var naiwake  = document.getElementById('naiwake').value.trim();
+  var seizochi = document.getElementById('seizochi').value.trim();
+  var inVal    = A - B;
+  var ratio    = A > 0 ? inVal / A * 100 : 0;
 
-function judge(){
-  if(!validate()) return;
-  const A = parseFloat(document.getElementById('valA').value);
-  const B = parseFloat(document.getElementById('valB').value);
-  const jigyosha = document.getElementById('jigyosha').value;
-  const shohin   = getShohinName();
-  const tantou   = document.getElementById('tantou').value.trim();
-  const cc       = document.getElementById('mail-cc').value.trim();
-  const naiwake  = document.getElementById('naiwake').value.trim();
-  const inVal = A - B;
-  const ratio = A > 0 ? inVal / A * 100 : 0;
-
-  let cls, title, body;
-  if(ratio > 50){
-    cls = 'ok-card'; title = '第3号 要件を満たしています';
-    body = '区域内の付加価値が調達費用の過半を上回っています。下の証明文書の内容を確認し、メールで送信してください。';
-  } else if(ratio === 50){
-    cls = 'warn-card'; title = 'ちょうど50% — 要件を満たしません';
-    body = '「過半を上回る」ことが要件です。50%ちょうどは不適合となります。費用の内訳を見直してから担当者にご相談ください。';
+  var cls, title, body;
+  if (ratio > 50) {
+    cls   = 'ok-card';
+    title = '第3号 要件を満たしています';
+    body  = '区域内の付加価値が調達費用の過半を上回っています。下の証明文書の内容を確認し、メールで送信してください。';
+  } else if (ratio === 50) {
+    cls   = 'warn-card';
+    title = 'ちょうど50% — 要件を満たしません';
+    body  = '「過半を上回る」ことが要件です。50%ちょうどは不適合となります。費用の内訳を見直してから担当者にご相談ください。';
   } else {
-    cls = 'ng-card'; title = '第3号 要件を満たしません';
-    body = `区域内付加価値割合が${p1(ratio)}%（50%以下）です。費用の内訳を確認のうえ、担当者にご相談ください。`;
+    cls   = 'ng-card';
+    title = '第3号 要件を満たしません';
+    body  = '区域内付加価値割合が' + p1(ratio) + '%（50%以下）です。費用の内訳を確認のうえ、担当者にご相談ください。';
   }
 
-  const rc = document.getElementById('result-card');
+  var rc = document.getElementById('result-card');
   rc.className = 'result-card visible ' + cls;
   document.getElementById('result-title').textContent = title;
   document.getElementById('result-body').textContent  = body;
   document.getElementById('result-formula').innerHTML =
-    `<b>${jigyosha}　${shohin}</b><hr>` +
-    `A（調達費用）：<b>${fmt(A)}円</b>　／　B（区域外費用）：<b>${fmt(B)}円</b><br>` +
-    `区域内付加価値額：A − B ＝ <b>${fmt(inVal)}円</b><br>` +
-    `区域内付加価値割合：（A−B）÷ A ＝ <b>${p1(ratio)}%</b>` +
-    (naiwake ? `<br>Bの内訳：${naiwake}` : '');
+    '<b>' + esc(jigyosha) + '　' + esc(shohin) + '</b><hr>' +
+    'A（調達費用）：<b>' + fmt(A) + '円</b>　／　B（区域外費用）：<b>' + fmt(B) + '円</b><br>' +
+    '区域内付加価値額：A − B ＝ <b>' + fmt(inVal) + '円</b><br>' +
+    '区域内付加価値割合：（A−B）÷ A ＝ <b>' + p1(ratio) + '%</b><br>' +
+    '一般販売価格：<b>' + fmt(hanbai) + '円</b>　製造・加工地：<b>' + esc(seizochi) + '</b>' +
+    (naiwake ? '<br>Bの内訳：' + esc(naiwake) : '');
 
-  const dc = document.getElementById('doc-card');
-  const nn = document.getElementById('ng-note');
+  var dc = document.getElementById('doc-card');
+  var nn = document.getElementById('ng-note');
 
-  if(ratio > 50){
-    const naiwakeRow = naiwake ? `\n区域外費用の内訳：${naiwake}` : '';
-    const docText =
-`西伊豆町長　殿
+  if (ratio > 50) {
+    var naiwakeRow = naiwake ? '\n区域外費用の内訳：' + naiwake : '';
+    var docText =
+      '西伊豆町長　殿\n\n' +
+      '　地場産品基準（平成31年総務省告示第179号第5条第3号）に基づき、' +
+      '下記のとおり付加価値割合を証明いたします。\n\n' +
+      '記\n\n' +
+      '事業者名　：' + jigyosha + '\n' +
+      '担当者名　：' + tantou + '\n' +
+      '返礼品名　：' + shohin + '\n' +
+      '証明日　　：' + today() + '\n\n' +
+      '【算出内容（標準的な算出方法）】\n' +
+      'A（調達費用・精算額・税込）　：' + fmt(A) + '円\n' +
+      'B（区域外で生じた費用・税込）：' + fmt(B) + '円' + naiwakeRow + '\n\n' +
+      '区域内付加価値額　　：A − B ＝ ' + fmt(inVal) + '円\n' +
+      '区域内付加価値割合　：（A−B）÷ A ＝ ' + p1(ratio) + '%\n\n' +
+      '製造・加工地　：' + seizochi + '\n' +
+      '一般販売価格　：' + fmt(hanbai) + '円（税込）\n\n' +
+      '上記割合が付加価値の過半を上回ることを確認しました。\n' +
+      '算出は総務省告示に定める標準的な算出方法によります。\n\n' +
+      '以上\n\n' +
+      '━━━━━━━━━━━━━━━━━━━━\n' +
+      jigyosha + '\n' +
+      '担当：' + tantou + '\n' +
+      '━━━━━━━━━━━━━━━━━━━━';
 
-　地場産品基準（平成31年総務省告示第179号第5条第3号）に基づき、下記のとおり付加価値割合を証明いたします。
-
-記
-
-事業者名　：${jigyosha}
-担当者名　：${tantou}
-返礼品名　：${shohin}
-証明日　　：${today()}
-
-【算出内容】
-A（調達費用・精算額・税込）　：${fmt(A)}円
-B（区域外で生じた費用・税込）：${fmt(B)}円${naiwakeRow}
-
-区域内付加価値額　　：A − B ＝ ${fmt(inVal)}円
-区域内付加価値割合　：（A−B）÷ A ＝ ${p1(ratio)}%
-
-上記割合が付加価値の過半を上回ることを確認しました。
-算出は総務省告示に定める標準的な算出方法によります。
-
-以上
-
-━━━━━━━━━━━━━━━━━━━━
-${jigyosha}
-担当：${tantou}
-━━━━━━━━━━━━━━━━━━━━`;
-
-    mailSubject = `【地場産品基準第3号 付加価値割合証明】${jigyosha}　${shohin}`;
-    mailBody    = docText + '\n\n※この画面のスクリーンショットを本メールに添付してください。';
+    mailSubject = '【地場産品基準第3号 付加価値割合証明】' + jigyosha + '　' + shohin;
+    mailBody    = docText + '\n\n※この画面のスクリーンショットおよびPDFを本メールに添付してください。';
     mailCc      = cc;
 
     document.getElementById('doc-body').textContent = docText;
 
-    const noteLines = ['クリックするとメールアプリが開きます。', '宛先・件名・本文が自動で入力されます。'];
-    if(cc) noteLines.push(`CC：${cc}（控えとして送信されます）`);
-    noteLines.push('この画面のスクリーンショットを添付してください。');
+    var noteLines = ['クリックするとメールアプリが開きます。', '宛先・件名・本文が自動で入力されます。'];
+    if (cc) noteLines.push('CC：' + cc + '（控えとして送信されます）');
+    noteLines.push('証明書PDFをダウンロードして添付してください。');
     document.getElementById('mail-note').textContent = noteLines.join('\n');
 
     dc.className = 'doc-card visible';
@@ -385,23 +452,117 @@ ${jigyosha}
     nn.className = 'ng-note visible';
     nn.textContent = '要件を満たしていないため証明文書は発行できません。費用の内訳を見直してから、担当者にご相談ください。';
   }
-  rc.scrollIntoView({behavior:'smooth', block:'start'});
+  rc.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-function sendMail(){
-  let url = `mailto:${MAIL_TO}?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
-  if(mailCc) url += `&cc=${encodeURIComponent(mailCc)}`;
+function sendMail() {
+  var url = 'mailto:' + MAIL_TO +
+    '?subject=' + encodeURIComponent(mailSubject) +
+    '&body='    + encodeURIComponent(mailBody);
+  if (mailCc) url += '&cc=' + encodeURIComponent(mailCc);
   window.location.href = url;
 }
 
-function resetForm(){
-  ['jigyosha','tantou','mail-cc','valA','valB','naiwake'].forEach(id => {
-    const el = document.getElementById(id); if(el) el.value = '';
-  });
-  const sel = document.getElementById('shohin-select');
-  const txt = document.getElementById('shohin-text');
-  sel.style.display = 'none'; sel.innerHTML = '';
-  txt.style.display = 'block'; txt.value = '';
+function downloadPDF() {
+  var jigyosha = document.getElementById('jigyosha').value;
+  var shohin   = getShohinName();
+  var tantou   = document.getElementById('tantou').value.trim();
+  var seizochi = document.getElementById('seizochi').value.trim();
+  var A        = parseFloat(document.getElementById('valA').value);
+  var B        = parseFloat(document.getElementById('valB').value);
+  var hanbai   = parseFloat(document.getElementById('hanbai').value);
+  var naiwake  = document.getElementById('naiwake').value.trim();
+  var inVal    = A - B;
+  var ratio    = A > 0 ? inVal / A * 100 : 0;
+  var hanbaiOk = hanbai >= A;
+  var naiwakeRow = naiwake
+    ? '<br><span style="font-size:8.5pt;color:#555">　Bの内訳：' + esc(naiwake) + '</span>'
+    : '';
+
+  var html =
+    '<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><title>付加価値割合証明書</title>' +
+    '<style>' +
+    '@page{size:A4;margin:15mm 16mm 12mm}' +
+    'body{font-family:\'Hiragino Mincho ProN\',\'MS Mincho\',\'Yu Mincho\',serif;font-size:10pt;line-height:1.65;color:#000}' +
+    '.atena{margin-bottom:3mm}' +
+    '.right-box{text-align:right;font-size:9.5pt;margin-bottom:3mm;line-height:1.9}' +
+    '.ul{border-bottom:1pt solid #000;display:inline-block;padding:0 1mm;min-width:60mm}' +
+    '.ul-w{border-bottom:1pt solid #000;display:inline-block;padding:0 1mm;min-width:100mm}' +
+    '.ul-m{border-bottom:1pt solid #000;display:inline-block;min-width:35mm;padding:0 1mm;text-align:right}' +
+    '.ul-s{border-bottom:1pt solid #000;display:inline-block;min-width:18mm;padding:0 1mm;text-align:center}' +
+    '.cb{width:4mm;height:4mm;border:1pt solid #000;display:inline-block;text-align:center;line-height:4mm;font-size:9pt;vertical-align:middle;margin-right:1mm}' +
+    '.indent{padding-left:7mm;font-size:9.5pt;margin:2mm 0}' +
+    '.note-box{border:0.5pt solid #000;padding:2mm 4mm;margin:2mm 0;min-height:12mm}' +
+    '.agree{font-size:8.5pt;margin:2mm 0 2mm 5mm;line-height:1.6;list-style:disc}' +
+    '.agree li{margin-bottom:1.5mm}' +
+    '.sign-box{border:0.5pt solid #000;padding:3mm 4mm;margin-top:4mm;font-size:9.5pt;line-height:1.9}' +
+    '.ryakki{border:0.5pt solid #ccc;background:#f9f9f9;padding:3mm 4mm;font-size:8.5pt;margin-top:5mm;line-height:1.7}' +
+    '.footer{font-size:8pt;color:#888;text-align:center;margin-top:5mm}' +
+    '</style></head><body>' +
+
+    '<div class="atena">西伊豆町長　殿</div>' +
+
+    '<div class="right-box">【返礼品等の製造等を行う者】<br>' +
+    '住所　<span class="ul">　</span><br>' +
+    '事業者名　<span class="ul">' + esc(jigyosha) + '</span><br>' +
+    '代表者職・氏名　<span class="ul">' + esc(tantou) + '</span></div>' +
+
+    '<p style="margin:4mm 0">　<span class="ul-w">' + esc(shohin) + '</span>については、西伊豆町の区域内における工程により、当該返礼品等の価値の<span class="ul-s"><strong>' + p1(ratio) + '%</strong></span>が生じていることを証明します。<br>' +
+    '上記については、以下の算出方法（該当する算出方法に☑）により算出しています。</p>' +
+
+    '<div style="margin:4mm 0 2mm">' +
+    '<span class="cb">☑</span><strong>総務大臣が定める標準的な算出方法</strong><br>' +
+    '<span style="font-size:9pt;margin-left:5mm">※標準的な算出方法における算出基礎は以下のとおり。</span><br>' +
+    '<div class="indent">A：当該地方団体による返礼品等の調達費用　<span class="ul-m"><strong>' + fmt(A) + '</strong></span>円（税込）<br>' +
+    'B：当該返礼品等の製造・販売等のために当該地方団体の区域外で生じた費用　<span class="ul-m"><strong>' + fmt(B) + '</strong></span>円（税込）' + naiwakeRow + '</div></div>' +
+
+    '<div style="margin:4mm 0">' +
+    '<span class="cb">□</span><strong>その他の算出方法</strong><br>' +
+    '<span style="font-size:9pt;margin-left:5mm">※その他の算出方法とする理由及びその算出方法の詳細は以下のとおり。</span>' +
+    '<div class="note-box"></div></div>' +
+
+    '<p style="margin:4mm 0;font-size:10pt">また、当該返礼品等の製造・加工地<sup>※1</sup>は<span class="ul">' + esc(seizochi) + '</span>であり、一般販売価格は<span class="ul-m"><strong>' + fmt(hanbai) + '</strong></span>円（税込）です<sup>※2</sup>。' +
+    '<span style="font-size:8.5pt;color:' + (hanbaiOk ? '#27500A' : '#A32D2D') + ';margin-left:2mm">' + (hanbaiOk ? '（✓ A以上）' : '（✗ 要確認）') + '</span></p>' +
+
+    '<p style="margin:3mm 0;font-size:9.5pt">なお、当該返礼品等を取り扱うに当たって、下記の事項に同意します。</p>' +
+    '<ul class="agree">' +
+    '<li>当該返礼品等については、地場産品基準（平成31年総務省告示第179号第5条）第8号イ〜ハの返礼品等として提出先以外の都道府県又は市区町村が取り扱う場合を除き、本証明書の提出先以外の都道府県又は市区町村の第3号の返礼品等として取り扱わないこと。</li>' +
+    '<li>当該返礼品等の付加価値の算出方法等について、地方団体の求めに応じ、必要な説明や資料提供等を行うこと。</li>' +
+    '</ul>' +
+
+    '<div class="sign-box">' +
+    '<div>証明日：' + today() + '</div>' +
+    '<div>事業者名：' + esc(jigyosha) + '</div>' +
+    '<div>担当者名：' + esc(tantou) + '</div>' +
+    '</div>' +
+
+    '<div style="font-size:8pt;color:#555;margin-top:3mm;line-height:1.6">' +
+    '※1 製造・加工地：国内は都道府県名・市区町村名、国外は国名。' +
+    '　※2 一般販売価格：非売品の場合は類似製品の通常価格。' +
+    '</div>' +
+
+    '<div class="footer">西伊豆町 産業振興課　地場産品基準第3号チェックシート　' + today() + '</div>' +
+    '</body></html>';
+
+  var w = window.open('', '_blank', 'width=820,height=1000');
+  w.document.write(html);
+  w.document.close();
+  w.focus();
+  setTimeout(function() { w.print(); }, 700);
+}
+
+function resetForm() {
+  var ids = ['jigyosha', 'tantou', 'mail-cc', 'seizochi', 'valA', 'valB', 'hanbai', 'naiwake'];
+  for (var i = 0; i < ids.length; i++) {
+    var el = document.getElementById(ids[i]);
+    if (el) el.value = '';
+  }
+  var sel = document.getElementById('shohin-select');
+  var txt = document.getElementById('shohin-text');
+  sel.style.display = 'none';
+  sel.innerHTML = '';
+  txt.style.display = 'block';
+  txt.value = '';
   txt.placeholder = '事業者を選ぶと商品リストが表示されます';
   txt.disabled = true;
   document.getElementById('mode-toggle').style.display = 'none';
@@ -411,14 +572,20 @@ function resetForm(){
   document.getElementById('live-row').style.opacity = '.3';
   document.getElementById('live-val').textContent   = '—';
   document.getElementById('live-pct').textContent   = '—';
-  ['jigyosha','shohin-select','shohin-text','tantou','valA','valB'].forEach(id => {
-    const el = document.getElementById(id); if(el) el.classList.remove('err');
-  });
-  ['err-jigyosha','err-shohin','err-tantou','err-valA','err-valB'].forEach(id => {
-    document.getElementById(id).style.display = 'none';
-  });
+  var hc = document.getElementById('hanbai-check');
+  hc.className = 'hanbai-check';
+  hc.textContent = '';
+  var errEls = ['jigyosha', 'shohin-select', 'shohin-text', 'tantou', 'seizochi', 'valA', 'valB', 'hanbai'];
+  for (var j = 0; j < errEls.length; j++) {
+    var el2 = document.getElementById(errEls[j]);
+    if (el2) el2.classList.remove('err');
+  }
+  var msgEls = ['err-jigyosha', 'err-shohin', 'err-tantou', 'err-seizochi', 'err-valA', 'err-valB', 'err-hanbai'];
+  for (var k = 0; k < msgEls.length; k++) {
+    document.getElementById(msgEls[k]).style.display = 'none';
+  }
   currentMode = 'list';
-  window.scrollTo({top:0, behavior:'smooth'});
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 </script>
 </body>
