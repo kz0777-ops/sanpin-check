@@ -164,7 +164,7 @@ footer{text-align:center;font-size:11px;color:#bbb;padding:1.5rem 0 2rem}
 
   <div class="field">
     <label>一般販売価格（税込）<span class="required">*</span></label>
-    <div class="desc">一般消費者向けの通常販売価格（円）。調達費用A以上である必要があります。</div>
+    <div class="desc">一般消費者向けの通常販売価格（円）。調達費用A（精算額）を下回ってはいけません。</div>
     <input type="number" id="hanbai" placeholder="例：2500" min="0" oninput="liveCalc()">
     <div class="err-msg" id="err-hanbai">一般販売価格を入力してください</div>
     <div class="hanbai-check" id="hanbai-check"></div>
@@ -338,10 +338,10 @@ function liveCalc() {
   if (!isNaN(A) && !isNaN(H) && H > 0 && A > 0) {
     if (H >= A) {
       hc.className = 'hanbai-check hanbai-ok';
-      hc.textContent = '✓ 調達費用A以上です（' + fmt(H) + '円 ≥ ' + fmt(A) + '円）';
+      hc.textContent = '✓ 問題ありません（一般販売価格 ' + fmt(H) + '円 ≥ 調達費用A ' + fmt(A) + '円）';
     } else {
       hc.className = 'hanbai-check hanbai-ng';
-      hc.textContent = '✗ 調達費用A（' + fmt(A) + '円）より低くなっています';
+      hc.textContent = '✗ 要確認：一般販売価格（' + fmt(H) + '円）が調達費用A（' + fmt(A) + '円）を下回っています';
     }
   } else {
     hc.className = 'hanbai-check';
