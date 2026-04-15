@@ -77,15 +77,15 @@ footer{text-align:center;font-size:11px;color:#bbb;padding:1.5rem 0 2rem}
 </head>
 <body>
 <div id="pdf-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#f0f0f0;z-index:9999;overflow:auto">
-  <div style="background:#185FA5;color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10">
-    <div>
-      <div style="font-size:13px;font-weight:600">証明書プレビュー</div>
-      <div style="font-size:11px;opacity:.85">この画面をスクリーンショットして送付してください</div>
-    </div>
-    <button onclick="closePDFOverlay()" style="background:rgba(255,255,255,.2);color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:13px;font-weight:600;cursor:pointer">✕ 閉じる</button>
+  <div style="background:#185FA5;color:#fff;padding:12px 16px;text-align:center">
+    <div style="font-size:13px;font-weight:600">証明書プレビュー</div>
+    <div style="font-size:12px;opacity:.9;margin-top:2px">この画面をスクリーンショットして送付してください</div>
   </div>
   <div style="padding:12px">
   <div id="pdf-content"></div>
+  </div>
+  <div style="padding:12px 12px 24px;text-align:center">
+    <button onclick="closePDFOverlay()" style="background:#fff;color:#185FA5;border:2px solid #185FA5;border-radius:10px;padding:10px 32px;font-size:15px;font-weight:600;cursor:pointer;width:100%;max-width:320px">✕ 閉じる（スクリーンショット後に押す）</button>
   </div>
 </div>
 <div class="wrap">
@@ -179,7 +179,7 @@ footer{text-align:center;font-size:11px;color:#bbb;padding:1.5rem 0 2rem}
   <div class="field">
     <label>製造・加工地<span class="required">*</span></label>
     <div class="desc">商品の製造・加工が行われた場所（例：静岡県西伊豆町）</div>
-    <input type="text" id="seizochi" placeholder="例：静岡県西伊豆町">
+    <input type="text" id="seizochi" placeholder="例：静岡県西伊豆町" value="静岡県西伊豆町">
     <div class="err-msg" id="err-seizochi">製造・加工地を入力してください</div>
   </div>
 
@@ -540,9 +540,7 @@ function downloadPDF() {
     '</ul>' +
 
     '<div style="border:1px solid #000;padding:8px 10px;margin-top:10px;font-size:12px;line-height:1.9">' +
-    '証明日：' + today() + '<br>' +
-    '事業者名：' + esc(jigyosha) + '<br>' +
-    '担当者名：' + esc(tantou) +
+    '証明日：' + today() +
     '</div>' +
 
     '<div style="font-size:10px;color:#888;text-align:center;margin-top:8px">西伊豆町 産業振興課　地場産品基準第3号チェックシート　' + today() + '</div>' +
